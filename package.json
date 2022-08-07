@@ -13,7 +13,13 @@
     "start": "remix-serve build",
     "format": "prettier --write ./app",
     "lint": "eslint ./app --max-warnings=0",
-    "lint-fix": "eslint ./app --fix"
+    "lint-fix": "eslint ./app --fix",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.+(json|yml|yaml|css|less|scss|html)": [
