@@ -1,14 +1,14 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import type { Users } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { db } from '../utils/db.server';
 
-type LoaderData = { users: Array<Users> };
+type LoaderData = { users: Array<User> };
 
 export const loader: LoaderFunction = async () => {
   const data: LoaderData = {
-    users: await db.users.findMany(),
+    users: await db.user.findMany(),
   };
   return json(data);
 };

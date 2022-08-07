@@ -11,33 +11,14 @@ enum LocationType {
   Point
 }
 
-type EventsLocation {
+type Location {
   coordinates Float[]
   name        String
   type        LocationType
 }
 
-type PostsLocation {
-  coordinates Float[]
-  name        String
-}
-
-type UsersHobbies {
-  v             Int     @map("__v")
-  id            String  @map("_id")
-  creation_date String
-  hobby_name    String
-  user_id       String?
-}
-
-type UsersLocation {
-  coordinates Float[]
-  name        String
-}
-
-model Comments {
+model Comment {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int      @map("__v")
   content       String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -46,16 +27,15 @@ model Comments {
   user_id       String   @db.ObjectId
 }
 
-model Events {
+model Event {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int            @map("__v")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   description   String
   event_date    DateTime       @db.Date
   hobby_id      String         @db.ObjectId
   joiners       String[]
-  location      EventsLocation
+  location      Location
   maxJoiners    Int
   seats         String
   title         String
@@ -65,47 +45,44 @@ model Events {
   @@index([location], map: "location_2dsphere")
 }
 
-model Followers {
+model Follower {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int       @map("__v")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   follower_id   String    @db.ObjectId
   user_id       String    @db.ObjectId
 }
 
-model Hobbies {
+model Hobby {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int?      @map("__v")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   hobby_name    String    @unique(map: "hobby_name_1")
-  user_id       String?   @db.ObjectId
+  user_id       String   @db.ObjectId
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-model Posts {
+model Post {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int           @map("__v")
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   description   String
   hobby_id      String        @db.ObjectId
   image         String
   like          String[]
-  location      PostsLocation
+  location      Location
   user_id       String        @db.ObjectId
 }
 
-model Users {
+model User {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int?           @map("__v")
   bio           String?
   birth_date    DateTime?      @db.Date
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   email         String         @unique(map: "email_1")
-  hobbies       UsersHobbies[]
-  location      UsersLocation?
+  hobbies       Hobby[]
+  location      Location?
   name          String
   password      String
   /// Multiple data types found: Float: 50%, Int: 50% out of 6 sampled entries

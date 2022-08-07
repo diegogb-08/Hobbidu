@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
 async function seed() {
-  const user = await db.users.create({
+  const user = await db.user.create({
     data: {
       user_name: 'Diego.08',
       // this is a hashed version of 'twixrox'
@@ -14,7 +14,7 @@ async function seed() {
   await Promise.all(
     getHobbies().map((hobby) => {
       const data = { user_id: user.id, ...hobby };
-      return db.hobbies.create({ data });
+      return db.hobby.create({ data });
     })
   );
 }
