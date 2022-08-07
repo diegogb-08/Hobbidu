@@ -1,0 +1,56 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:prettier/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:jsx-a11y/recommended",
+    "@remix-run/eslint-config",
+    "@remix-run/eslint-config/jest-testing-library"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "prettier", "unused-imports", "jsx-a11y"],
+  "rules": {
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "camelCase": true,
+          "pascalCase": true
+        }
+      }
+    ],
+    "max-params": ["warn", 5],
+    "complexity": ["warn", 10],
+    "max-lines": ["warn", 400],
+    //max. number of lines recommended
+    "unicorn/number-literal-case": "off",
+    // will be active after strict mode is on
+    "@typescript-eslint/no-unused-vars": "off",
+    // necessary to remove unused imports
+    "unicorn/prevent-abbreviations": "off",
+    // abbreviations like props or fn are wanted
+    "unicorn/prefer-ternary": "off",
+    // ternary is not always better
+    "unicorn/no-useless-undefined": "off",
+    // not working propperly
+    "unicorn/no-null": "off",
+    // we like arrow function embedded in calls
+    "unicorn/no-array-for-each": "off",
+    // performance should only be improved until it cause problems
+    "unicorn/better-regex": "off",
+    // more efficient regex may be less clear to read
+    "unicorn/prefer-query-selector": "off",
+    // automatic fix break some queries
+    "unused-imports/no-unused-imports": "error",
+    " unicorn/text-encoding-identifier-case": "off"
+  }
+}
