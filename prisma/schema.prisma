@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum LocationType {
+  Point
+}
+
+type EventsLocation {
+  coordinates Float[]
+  name        String
+  type        LocationType
+}
+
+type PostsLocation {
+  coordinates Float[]
+  name        String
+}
+
+type UsersHobbies {
+  v             Int     @map("__v")
+  id            String  @map("_id")
+  creation_date String
+  hobby_name    String
+  user_id       String?
+}
+
+type UsersLocation {
+  coordinates Float[]
+  name        String
+}
+
+model Comments {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  content       String
+  creation_date DateTime @db.Date
+  event_id      String?  @db.ObjectId
+  post_id       String?  @db.ObjectId
+  user_id       String   @db.ObjectId
+}
+
+model Events {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int            @map("__v")
+  creation_date DateTime       @db.Date
+  description   String
+  event_date    DateTime       @db.Date
+  hobby_id      String         @db.ObjectId
+  joiners       String[]
+  location      EventsLocation
+  maxJoiners    Int
+  seats         String
+  title         String
+  user_id       String         @db.ObjectId
+  vehicle       Boolean
+
+  @@index([location], map: "location_2dsphere")
+}
+
+model Followers {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  creation_date DateTime @db.Date
+  follower_id   String   @db.ObjectId
+  user_id       String   @db.ObjectId
+}
+
+model Hobbies {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  creation_date DateTime @db.Date
+  hobby_name    String   @unique(map: "hobby_name_1")
+  user_id       String?  @db.ObjectId
+}
+
+model Posts {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int           @map("__v")
+  creation_date DateTime      @db.Date
+  description   String
+  hobby_id      String        @db.ObjectId
+  image         String
+  like          String[]
+  location      PostsLocation
+  user_id       String        @db.ObjectId
+}
+
+model Users {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int            @map("__v")
+  bio           String?
+  birth_date    DateTime?      @db.Date
+  creation_date DateTime       @db.Date
+  email         String         @unique(map: "email_1")
+  hobbies       UsersHobbies[]
+  location      UsersLocation?
+  name          String
+  password      String
+  /// Multiple data types found: Float: 50%, Int: 50% out of 6 sampled entries
+  phone_number  String?
+  profile_img   String?
+  user_name     String         @unique(map: "user_name_1")
+}
