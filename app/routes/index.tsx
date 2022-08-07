@@ -17,7 +17,7 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   console.log(data);
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', lineHeight: '1.4' }}>
+    <div className="bg-red-500">
       <h1>Welcome to Remix</h1>
       <ul>
         <li>
