@@ -19,6 +19,9 @@
       "npm run format"
     ]
   },
+  "prisma": {
+    "seed": "node --require esbuild-register prisma/seed.ts"
+  },
   "dependencies": {
     "@prisma/client": "^4.1.1",
     "@remix-run/node": "^1.6.7",

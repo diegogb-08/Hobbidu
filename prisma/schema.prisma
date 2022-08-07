@@ -39,7 +39,8 @@ model Comments {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   v             Int      @map("__v")
   content       String
-  creation_date DateTime @db.Date
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   event_id      String?  @db.ObjectId
   post_id       String?  @db.ObjectId
   user_id       String   @db.ObjectId
@@ -48,7 +49,8 @@ model Comments {
 model Events {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
   v             Int            @map("__v")
-  creation_date DateTime       @db.Date
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   description   String
   event_date    DateTime       @db.Date
   hobby_id      String         @db.ObjectId
@@ -64,25 +66,28 @@ model Events {
 }
 
 model Followers {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int      @map("__v")
-  creation_date DateTime @db.Date
-  follower_id   String   @db.ObjectId
-  user_id       String   @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int       @map("__v")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  follower_id   String    @db.ObjectId
+  user_id       String    @db.ObjectId
 }
 
 model Hobbies {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int      @map("__v")
-  creation_date DateTime @db.Date
-  hobby_name    String   @unique(map: "hobby_name_1")
-  user_id       String?  @db.ObjectId
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int?      @map("__v")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  hobby_name    String    @unique(map: "hobby_name_1")
+  user_id       String?   @db.ObjectId
 }
 
 model Posts {
   id            String        @id @default(auto()) @map("_id") @db.ObjectId
   v             Int           @map("__v")
-  creation_date DateTime      @db.Date
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
   description   String
   hobby_id      String        @db.ObjectId
   image         String
@@ -93,10 +98,11 @@ model Posts {
 
 model Users {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  v             Int            @map("__v")
+  v             Int?           @map("__v")
   bio           String?
   birth_date    DateTime?      @db.Date
-  creation_date DateTime       @db.Date
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   email         String         @unique(map: "email_1")
   hobbies       UsersHobbies[]
   location      UsersLocation?
