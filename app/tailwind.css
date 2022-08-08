@@ -607,6 +607,10 @@ video {
   margin: 1.25rem;
 }
 
+.box-border {
+  box-sizing: border-box;
+}
+
 .flex {
   display: flex;
 }
@@ -615,8 +619,28 @@ video {
   height: 100vh;
 }
 
+.h-4\/5 {
+  height: 80%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-16 {
+  height: 4rem;
+}
+
 .w-screen {
   width: 100vw;
+}
+
+.w-5 {
+  width: 1.25rem;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
 }
 
 .flex-row {

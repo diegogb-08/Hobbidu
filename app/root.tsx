@@ -7,6 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
+import Header from './components/Header';
 import styles from './tailwind.css';
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
@@ -26,6 +27,7 @@ export default function App() {
         <Links />
       </head>
       <body>
+        <Header isAuthenticated={true} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
