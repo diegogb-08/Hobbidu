@@ -17,7 +17,7 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   console.log(data);
   return (
-    <div className="bg-red-500">
+    <div className="bg-red-100 h-screen w-screen flex justify-center items-center">
       <h1>Welcome to Remix</h1>
       <ul>
         <li>
