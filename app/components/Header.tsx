@@ -6,9 +6,9 @@ import NavBar from './NavBar';
 const Header = () => {
   const isAuthenticated = useAuth();
   return (
-    <div className="box-border h-16 flex-1 flex justify-center items-center bg-white border-b-[0.5px] border-b-lable6">
+    <div className="box-border h-16 flex-1 flex justify-center items-center bg-white border-b-[0.5px] border-b-gray">
       <img className="h-4/5" src={logo} alt="logo" />
-      <div className="absolute inset-x-3/4">
+      <div className="absolute right-4">
         {isAuthenticated ? <NavBar /> : <LoginButton />}
       </div>
     </div>
