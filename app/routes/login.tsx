@@ -1,108 +1,56 @@
-import { Form, Link, useActionData } from '@remix-run/react';
-
-type ActionData = {
-  formError?: string;
-  fieldErrors?: { username: string | undefined; password: string | undefined };
-  fields?: { loginType: string; username: string; password: string };
-};
+import { Form } from '@remix-run/react';
 
 const Login = () => {
-  const actionData = useActionData<ActionData | undefined>();
   return (
-    <div className="h-screen w-screen bg-red-100 flex justify-center items-center">
-      <div className="bg-white p-10 rounded" data-light="">
-        <h1>Login</h1>
-        <Form
-          method="post"
-          aria-describedby={
-            actionData?.formError ? 'form-error-message' : undefined
-          }
-        >
-          <fieldset>
-            <legend className="sr-only">Login or Register?</legend>
-            <label>
+    <div className="w-full h-[calc(100vh-4rem)] flex justify-center items-center">
+      <div className="h-full flex-1 bg-login-background bg-center bg-no-repeat bg-cover" />
+      {/* <img
+        src={background}
+        alt="background"
+        className="h-full flex-1 bg-cover bg-no-repeat"
+      /> */}
+      <div className="h-full w-5/12 p-4">
+        <div className="h-full w-full bg-white p-10 rounded border-[0.5px] border-lable6 flex flex-col">
+          <h2 className="text-4xl text-center">Login</h2>
+          <Form method="post" className="flex flex-1 flex-col items-center">
+            <fieldset className="m-4 w-full flex justify-evenly">
+              <legend className="sr-only">Login or Register?</legend>
+              <label>
+                <input type="radio" name="loginType" value="login" /> Login
+              </label>
+              <label>
+                <input type="radio" name="loginType" value="register" />{' '}
+                Register
+              </label>
+            </fieldset>
+            <div className="m-4">
+              <label htmlFor="username-input" className="m-4">
+                Username
+              </label>
               <input
-                type="radio"
-                name="loginType"
-                value="login"
-                defaultChecked={
-                  !actionData?.fields?.loginType ||
-                  actionData?.fields?.loginType === 'login'
-                }
-              />{' '}
-              Login
-            </label>
-            <label>
+                className="border m-4"
+                type="text"
+                id="username-input"
+                name="username"
+              />
+            </div>
+            <div className="m-4">
+              <label htmlFor="password-input" className="m-4">
+                Password
+              </label>
               <input
-                type="radio"
-                name="loginType"
-                value="register"
-                defaultChecked={actionData?.fields?.loginType === 'register'}
-              />{' '}
-              Register
-            </label>
-          </fieldset>
-          <div>
-            <label htmlFor="username-input">Username</label>
-            <input
-              className="border"
-              type="text"
-              id="username-input"
-              name="username"
-              defaultValue={actionData?.fields?.username}
-              aria-invalid={Boolean(actionData?.fieldErrors?.username)}
-              aria-describedby={
-                actionData?.fieldErrors?.username ? 'username-error' : undefined
-              }
-            />
-            {actionData?.fieldErrors?.username ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="username-error"
-              >
-                {actionData.fieldErrors.username}
-              </p>
-            ) : null}
-          </div>
-          <div>
-            <label htmlFor="password-input">Password</label>
-            <input
-              className="border"
-              id="password-input"
-              name="password"
-              defaultValue={actionData?.fields?.password}
-              type="password"
-              aria-invalid={Boolean(actionData?.fieldErrors?.password)}
-              aria-describedby={
-                actionData?.fieldErrors?.password ? 'password-error' : undefined
-              }
-            />
-            {actionData?.fieldErrors?.password ? (
-              <p
-                className="form-validation-error"
-                role="alert"
-                id="password-error"
-              >
-                {actionData.fieldErrors.password}
-              </p>
-            ) : null}
-          </div>
-          <div id="form-error-message">
-            {actionData?.formError ? (
-              <p className="form-validation-error" role="alert">
-                {actionData.formError}
-              </p>
-            ) : null}
-          </div>
-          <button type="submit" className="bg-red-300 p-2 rounded">
-            Submit
-          </button>
-        </Form>
-      </div>
-      <br />
-      <div>
-        <Link to="/">Back home</Link>
+                className="border m-4"
+                id="password-input"
+                name="password"
+                type="password"
+              />
+            </div>
+            <div id="form-error-message"></div>
+            <button type="submit" className="bg-red-300 p-2 rounded">
+              Submit
+            </button>
+          </Form>
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,9 @@ import {
 import Header from './components/Header';
 import styles from './tailwind.css';
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles, as: 'style' },
+];
 
 export const meta: MetaFunction = () => ({
   // eslint-disable-next-line unicorn/text-encoding-identifier-case
@@ -26,8 +28,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <Header isAuthenticated={true} />
+      <body className="bg-secondary h-screen w-screen justify-center items-center">
+        <Header />
         <Outlet />
         <ScrollRestoration />
         <Scripts />
