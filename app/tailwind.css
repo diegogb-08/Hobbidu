@@ -665,6 +665,18 @@ video {
   border-radius: 0.25rem;
 }
 
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.rounded-3xl {
+  border-radius: 1.5rem;
+}
+
 .border-\[0\.5px\] {
   border-width: 0.5px;
 }
@@ -706,6 +718,11 @@ video {
 .bg-primary {
   --tw-bg-opacity: 1;
   background-color: rgb(240 83 86 / var(--tw-bg-opacity));
+}
+
+.bg-blue {
+  --tw-bg-opacity: 1;
+  background-color: rgb(53 171 236 / var(--tw-bg-opacity));
 }
 
 .bg-login-background {
@@ -820,6 +837,11 @@ video {
   color: rgb(240 83 86 / var(--tw-text-opacity));
 }
 
+.text-blue {
+  --tw-text-opacity: 1;
+  color: rgb(53 171 236 / var(--tw-text-opacity));
+}
+
 .transition {
   transition-property: color, background-color, border-color, fill, stroke,
     opacity, box-shadow, transform, filter, -webkit-text-decoration-color,
@@ -845,6 +867,11 @@ video {
 .hover\:bg-primary:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(240 83 86 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-blue:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(53 171 236 / var(--tw-bg-opacity));
 }
 
 .hover\:text-fontcolor-white:hover {
