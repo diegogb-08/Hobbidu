@@ -573,6 +573,10 @@ video {
   margin-bottom: 1rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .box-border {
   box-sizing: border-box;
 }
@@ -783,6 +787,10 @@ video {
   font-weight: 400;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
 .text-label {
   --tw-text-opacity: 1;
   color: rgb(240 83 86 / var(--tw-text-opacity));
@@ -805,6 +813,11 @@ video {
 
 .text-gray {
   color: #acacacc4;
+}
+
+.text-fontcolor2 {
+  --tw-text-opacity: 1;
+  color: rgb(240 83 86 / var(--tw-text-opacity));
 }
 
 .transition {
