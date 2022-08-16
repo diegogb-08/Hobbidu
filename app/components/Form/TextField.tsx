@@ -1,22 +1,16 @@
-import type { FC, HTMLProps } from 'react';
+import type { FC, HTMLProps } from 'react'
 
 interface Props extends HTMLProps<HTMLInputElement> {
-  isError?: boolean;
-  text?: string;
-  helperText?: string;
-  className?: string;
+  isError?: boolean
+  text?: string
+  helperText?: string
+  className?: string
 }
 
-const TextField: FC<Props> = ({
-  isError,
-  text,
-  helperText,
-  className,
-  ...inputProps
-}: Props) => {
+const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputProps }: Props) => {
   return (
-    <div className="w-full">
-      <label htmlFor="floatingInput" className="text-black">
+    <div className='w-full'>
+      <label htmlFor='floatingInput' className='text-black'>
         {text}
       </label>
       <input
@@ -28,20 +22,17 @@ const TextField: FC<Props> = ({
         text-base
         font-normal
         bg-white bg-clip-padding
-        border border-solid border-gray
+        border border-solid
+        ${isError ? 'border-red' : 'border-gray'}
         rounded
         transition
         ease-in-out
         m-0 focus:bg-white focus:border-blue focus:outline-non ${className}`}
         {...inputProps}
       />
-      {helperText && (
-        <span className={`${isError ? 'text-red' : 'text-gray'}`}>
-          {helperText}
-        </span>
-      )}
+      {helperText && <span className={`${isError ? 'text-red' : 'text-gray'}`}>{helperText}</span>}
     </div>
-  );
-};
+  )
+}
 
-export default TextField;
+export default TextField

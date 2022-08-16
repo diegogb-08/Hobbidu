@@ -1,9 +1,9 @@
-import type { FC, RefAttributes } from 'react';
-import type { RemixLinkProps } from '@remix-run/react/dist/components';
-import { Link } from '@remix-run/react';
+import type { FC, RefAttributes } from 'react'
+import type { RemixLinkProps } from '@remix-run/react/dist/components'
+import { Link } from '@remix-run/react'
 
 interface Props extends RemixLinkProps, RefAttributes<HTMLAnchorElement> {
-  text: string;
+  text: string
 }
 
 const LinkButton: FC<Props> = ({ text, className, ...props }) => {
@@ -14,7 +14,7 @@ const LinkButton: FC<Props> = ({ text, className, ...props }) => {
     >
       {text}
     </Link>
-  );
-};
+  )
+}
 
-export default LinkButton;
+export default LinkButton

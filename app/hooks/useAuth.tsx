@@ -1,5 +1,5 @@
 const useAuth = () => {
-  return false;
-};
+  return false
+}
 
-export default useAuth;
+export default useAuth
