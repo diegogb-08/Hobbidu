@@ -20,8 +20,8 @@ export const authenticator = new Authenticator<{ user: User; token: string } | T
 
 type ActionData =
   | {
-      email: undefined | string
-      password: undefined | string
+      email?: string
+      password?: string
     }
   | undefined
 
@@ -39,38 +39,46 @@ const login = async (formData: FormData) => {
   }
 
   if (typeof email === 'string' && typeof password === 'string') {
-    const user = await db.user.findUnique({
-      where: {
-        email
+    try {
+      const user = await db.user.findUnique({
+        where: {
+          email
+        }
+      })
+      errors = {
+        email: user ? undefined : 'Email does not exist',
+        password: user && !(await bcrypt.compare(password, user.password)) ? undefined : 'Password incorrect'
       }
-    })
-    errors = {
-      email: user ? undefined : 'Email does not exist',
-      password: user && !(await bcrypt.compare(password, user.password)) ? undefined : 'Password incorrect'
-    }
-    if (hasErrors) {
+      if (hasErrors) {
+        return json<{ errors: ActionData }>({ errors })
+      }
+      const payload = {
+        user,
+        tokenCreationDate: new Date()
+      }
+
+      invariant(SECRET, 'Missing Secret word.')
+      const token = jwt.sign(payload, SECRET, {
+        expiresIn: '1w'
+      })
+      invariant(user, 'User was not found')
+      return { user, token }
+    } catch (error) {
+      console.error(error)
+      errors = {
+        email: 'Email does not exist',
+        password: 'Password incorrect'
+      }
       return json<{ errors: ActionData }>({ errors })
     }
-    const payload = {
-      user,
-      tokenCreationDate: new Date()
-    }
-    if (!SECRET) throw new Error('Missing Secret word.')
-
-    const token = jwt.sign(payload, SECRET, {
-      expiresIn: '1w'
-    })
-    invariant(user, 'User was not found')
-    return { user, token }
   }
   return abort()
 }
 
-if (!GOOGLE_CLIENT_ID) throw new Error('Missing Google client id.')
-if (!GOOGLE_CLIENT_SECRET) throw new Error('Missing Google client secret.')
-if (!GOOGLE_CALLBACK_URL) throw new Error('Missing Google redirect uri.')
+invariant(GOOGLE_CLIENT_ID, 'Missing Google client id.')
+invariant(GOOGLE_CLIENT_SECRET, 'Missing Google client secret.')
+invariant(GOOGLE_CALLBACK_URL, 'Missing Google redirect uri.')
 
-// Tell the Authenticator to use the form strategy
 authenticator
   .use(
     new FormStrategy(async ({ form: formData }) => {

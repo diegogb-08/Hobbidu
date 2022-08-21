@@ -1,7 +1,7 @@
 import { db } from '~/utils/db.server'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import bcrypt from 'bcryptjs'
-import { json, redirect } from '@remix-run/node'
+import { json } from '@remix-run/node'
 
 type ActionData =
   | {
@@ -42,10 +42,9 @@ export const register = async (request: Request) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10)
-    const user = await db.user.create({
+    return await db.user.create({
       data: { name, user_name, email, password: hashedPassword }
     })
-    if (user) return redirect('/account/login')
   } catch (error) {
     console.error(error)
     if (error instanceof PrismaClientKnownRequestError) {

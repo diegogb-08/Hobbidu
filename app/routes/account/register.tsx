@@ -1,11 +1,28 @@
-import { Form, useActionData } from '@remix-run/react'
-import type { ActionFunction } from '@remix-run/node'
+import { useActionData } from '@remix-run/react'
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
 import { register } from '~/services/register.server'
+import AuthContainer from '~/components/Layouts/AuthContainer'
+import GoogleButton from '~/components/Buttons/GoogleButton'
+import { authenticator } from '~/services/auth.server'
+import { ActionValue } from '~/types/types'
 
 export const action: ActionFunction = async ({ request }) => {
-  return await register(request)
+  const clonedRequest = new Request(request)
+  const response = await register(request)
+  if (response) {
+    return await authenticator.authenticate(ActionValue.STANDARD, clonedRequest, {
+      successRedirect: '/'
+    })
+  }
+  return response
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return await authenticator.isAuthenticated(request, {
+    successRedirect: '/'
+  })
 }
 
 const Register = () => {
@@ -13,7 +30,7 @@ const Register = () => {
 
   console.log({ actionData })
   return (
-    <Form method='post' action='/account/register' className='flex flex-1 flex-col items-center justify-center'>
+    <AuthContainer buttonGroup={<GoogleButton />}>
       <h2 className='text-4xl text-center'>Register</h2>
       <div className='h-8' />
       <TextField
@@ -56,7 +73,7 @@ const Register = () => {
       />
       <div className='h-8' />
       <SubmitButton />
-    </Form>
+    </AuthContainer>
   )
 }
 

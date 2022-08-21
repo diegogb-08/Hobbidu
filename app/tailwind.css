@@ -559,8 +559,16 @@ video {
   position: absolute;
 }
 
+.relative {
+  position: relative;
+}
+
 .right-4 {
   right: 1rem;
+}
+
+.bottom-\[14px\] {
+  bottom: 14px;
 }
 
 .m-0 {
@@ -615,6 +623,10 @@ video {
   height: 16.666667%;
 }
 
+.h-\[1px\] {
+  height: 1px;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -635,8 +647,16 @@ video {
   width: 41.666667%;
 }
 
+.w-8 {
+  width: 2rem;
+}
+
 .flex-1 {
   flex: 1 1 0%;
+}
+
+.flex-row {
+  flex-direction: row;
 }
 
 .flex-col {

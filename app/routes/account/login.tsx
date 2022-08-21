@@ -1,13 +1,11 @@
-import { Form, useActionData, useLoaderData } from '@remix-run/react'
+import { useActionData, useLoaderData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { authenticator } from '~/services/auth.server'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-
-enum ActionValue {
-  STANDARD = 'standard',
-  GOOGLE = 'google'
-}
+import { ActionValue } from '~/types/types'
+import GoogleButton from '~/components/Buttons/GoogleButton'
+import AuthContainer from '~/components/Layouts/AuthContainer'
 
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = new Request(request)
@@ -35,26 +33,33 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const Login = () => {
   const actionData = useActionData<typeof action>()
-  const loader = useLoaderData()
+  useLoaderData()
 
-  console.log({ loader, actionData })
   return (
-    <>
-      <Form method='post' className='flex flex-1 flex-col items-center justify-center'>
-        <h2 className='text-4xl text-center'>Login</h2>
-        <div className='h-8' />
-        <TextField text='Email' placeholder='email@email.com' type='email' name='email' />
-        <div className='h-8' />
-        <TextField text='Password' type='password' name='password' />
-        <div className='h-8' />
-        <SubmitButton value={ActionValue.STANDARD} name='_action' />
-      </Form>
-      <Form method='post' className='flex flex-1 flex-col items-center justify-center'>
-        <button type='submit' name='_action' value={ActionValue.GOOGLE}>
-          LOGIN WITH GOOGLE
-        </button>
-      </Form>
-    </>
+    <AuthContainer buttonGroup={<GoogleButton />}>
+      <h2 className='text-4xl text-center'>Login</h2>
+      <div className='h-8' />
+      <TextField
+        text='Email'
+        placeholder='email@email.com'
+        type='email'
+        name='email'
+        defaultValue={actionData?.email}
+        isError={!!actionData?.errors?.email}
+        helperText={actionData?.errors?.email}
+      />
+      <div className='h-8' />
+      <TextField
+        text='Password'
+        type='password'
+        name='password'
+        defaultValue={actionData?.password}
+        isError={!!actionData?.errors?.password}
+        helperText={actionData?.errors?.password}
+      />
+      <div className='h-8' />
+      <SubmitButton value={ActionValue.STANDARD} name='_action' />
+    </AuthContainer>
   )
 }
 
