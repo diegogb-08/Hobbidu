@@ -1,6 +1,5 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
-import Header from './components/Header'
 import styles from './tailwind.css'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }]
@@ -19,8 +18,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className='bg-secondary h-screen w-screen justify-center items-center'>
-        <Header />
+      <body>
         <Outlet />
         <ScrollRestoration />
         <Scripts />

@@ -1,13 +1,11 @@
 import { useActionData, useLoaderData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
-import { json } from '@remix-run/node'
 import { authenticator } from '~/services/auth.server'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
 import { ActionValue } from '~/types/types'
 import GoogleButton from '~/components/Buttons/GoogleButton'
 import AuthContainer from '~/components/Layouts/AuthContainer'
-import { getSession } from '~/services/session.server'
 
 export const action: ActionFunction = async ({ request, context }) => {
   const clonedRequest = new Request(request)
@@ -21,6 +19,7 @@ export const action: ActionFunction = async ({ request, context }) => {
     })
   }
   if (_action === ActionValue.GOOGLE) {
+    console.log('GOOGLE GOOGLE GOOGLE')
     return await authenticator.authenticate(ActionValue.GOOGLE, request, {
       successRedirect: '/',
       throwOnError: true,
@@ -32,11 +31,6 @@ export const action: ActionFunction = async ({ request, context }) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(request.headers.get('_session'))
-  const error = session.get('sessionErrorKey')
-  if (error) {
-    return json({ error })
-  }
   return await authenticator.isAuthenticated(request, {
     successRedirect: '/'
   })
@@ -44,8 +38,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const Login = () => {
   const actionData = useActionData<typeof action>()
-  const data = useLoaderData()
-  console.log({ data })
+  const loginData = useLoaderData()
+  console.log({ loginData })
   return (
     <AuthContainer buttonGroup={<GoogleButton />}>
       <h2 className='text-4xl text-center'>Login</h2>

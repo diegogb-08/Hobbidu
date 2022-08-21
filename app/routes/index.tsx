@@ -1,3 +1,18 @@
+import type { LoaderFunction } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
+import AppContainer from '~/components/Layouts/AppContainer'
+import { authenticator } from '~/services/auth.server'
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return await authenticator.isAuthenticated(request)
+}
+
 export default function Index() {
-  return <div className='h-full w-full bg-secondary'>hello Index</div>
+  const indexData = useLoaderData<typeof loader>()
+  console.log({ indexData })
+  return (
+    <AppContainer user={indexData?.user}>
+      <div className='h-full w-full bg-secondary'>hello Index</div>
+    </AppContainer>
+  )
 }

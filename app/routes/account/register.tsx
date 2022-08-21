@@ -28,7 +28,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 const Register = () => {
   const actionData = useActionData<typeof action>()
 
-  console.log({ actionData })
   return (
     <AuthContainer buttonGroup={<GoogleButton />}>
       <h2 className='text-4xl text-center'>Register</h2>
