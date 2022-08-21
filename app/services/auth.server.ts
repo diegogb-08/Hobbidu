@@ -13,12 +13,12 @@ import invariant from 'tiny-invariant'
 import type { ActionData } from './user.server'
 import { login } from './user.server'
 
-interface UserAuth {
+export interface UserAuth {
   user: User
   token: string
 }
 
-type ErrorAuth = TypedResponse<{ errors: ActionData }>
+export type ErrorAuth = TypedResponse<{ errors: ActionData }>
 
 export const authenticator = new Authenticator<UserAuth | ErrorAuth | null>(sessionStorage)
 

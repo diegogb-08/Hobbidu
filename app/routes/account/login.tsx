@@ -19,7 +19,6 @@ export const action: ActionFunction = async ({ request, context }) => {
     })
   }
   if (_action === ActionValue.GOOGLE) {
-    console.log('GOOGLE GOOGLE GOOGLE')
     return await authenticator.authenticate(ActionValue.GOOGLE, request, {
       successRedirect: '/',
       throwOnError: true,
@@ -38,8 +37,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const Login = () => {
   const actionData = useActionData<typeof action>()
-  const loginData = useLoaderData()
-  console.log({ loginData })
+  useLoaderData()
   return (
     <AuthContainer buttonGroup={<GoogleButton />}>
       <h2 className='text-4xl text-center'>Login</h2>

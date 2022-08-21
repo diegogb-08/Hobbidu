@@ -810,6 +810,10 @@ video {
   font-weight: 400;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .text-fontcolor2 {
   --tw-text-opacity: 1;
   color: rgb(240 83 86 / var(--tw-text-opacity));
