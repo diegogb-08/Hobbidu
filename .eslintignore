@@ -1,3 +1,4 @@
 /node_modules
 /public
 /app/utils/db.server.ts
+/app/tailwind.css
