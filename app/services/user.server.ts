@@ -1,73 +1,53 @@
 import { db } from '~/utils/db.server'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { json } from '@remix-run/node'
-import invariant from 'tiny-invariant'
 import { SECRET } from './constants'
 import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-import { abort } from 'node:process'
+import type { ActionData } from '~/types/types'
+import { AuthorizationError } from 'remix-auth'
+import { getSession } from './session.server'
 
-export type ActionData =
-  | {
-      email?: string
-      password?: string
-    }
-  | {
-      name: undefined | string
-      user_name: undefined | string
-      email: undefined | string
-      password: undefined | string
-    }
-  | undefined
+export enum SessionErrorKey {
+  EmptyFields = 'empty_fields',
+  IncorrectFields = 'incorrect_fields',
+  WrongFieldType = 'wrong_field_type',
+  MissingSecret = 'missing_secret',
+  IncorrectDetails = 'incorrect_details'
+}
 
 export const login = async (formData: FormData) => {
   const email = formData.get('email')
   const password = formData.get('password')
 
-  let errors: ActionData = {
-    email: email ? undefined : 'Email is required',
-    password: password ? undefined : 'Password is required'
+  if (!email || !password) {
+    throw new AuthorizationError(SessionErrorKey.EmptyFields)
   }
-  const hasErrors = Object.values(errors).some(Boolean)
-  if (hasErrors) {
-    return json<{ errors: ActionData }>({ errors })
+
+  if (!SECRET) {
+    throw new AuthorizationError(SessionErrorKey.MissingSecret)
   }
 
   if (typeof email === 'string' && typeof password === 'string') {
-    try {
-      const user = await db.user.findUnique({
-        where: {
-          email
-        }
-      })
-      errors = {
-        email: user ? undefined : 'Email does not exist',
-        password: user && !(await bcrypt.compare(password, user.password)) ? undefined : 'Password incorrect'
+    const user = await db.user.findUnique({
+      where: {
+        email
       }
-      if (hasErrors) {
-        return json<{ errors: ActionData }>({ errors })
-      }
-      const payload = {
-        user,
-        tokenCreationDate: new Date()
-      }
-
-      invariant(SECRET, 'Missing Secret word.')
-      const token = jwt.sign(payload, SECRET, {
-        expiresIn: '1w'
-      })
-      invariant(user, 'User was not found')
-      return { user, token }
-    } catch (error) {
-      console.error(error)
-      errors = {
-        email: 'Email does not exist',
-        password: 'Password incorrect'
-      }
-      return json<{ errors: ActionData }>({ errors })
+    })
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new AuthorizationError(SessionErrorKey.IncorrectDetails)
     }
+    const payload = {
+      user,
+      tokenCreationDate: new Date()
+    }
+
+    const token = jwt.sign(payload, SECRET, {
+      expiresIn: '1w'
+    })
+    return { user, token }
   }
-  return abort()
+  throw new AuthorizationError(SessionErrorKey.WrongFieldType)
 }
 
 export const register = async (request: Request) => {
@@ -110,5 +90,35 @@ export const register = async (request: Request) => {
       return { error, message: message + location }
     }
     return json<{ errors: ActionData }>({ errors })
+  }
+}
+
+export const validateLogin = async (request: Request) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  const sessionErrorKey: { message: SessionErrorKey } | undefined = session.get('sessionErrorKey')
+  switch (sessionErrorKey?.message) {
+    case SessionErrorKey.EmptyFields:
+      return json<{ errors: ActionData }>({
+        errors: {
+          email: 'Email is required',
+          password: 'Password is required'
+        }
+      })
+    case SessionErrorKey.IncorrectDetails:
+    case SessionErrorKey.IncorrectFields:
+      return json<{ errors: ActionData }>({
+        errors: {
+          email: 'Email not found',
+          password: 'Password is incorrect'
+        }
+      })
+    case SessionErrorKey.MissingSecret:
+      throw new Error('Secret is missing')
+    case SessionErrorKey.WrongFieldType:
+      throw new Error('Fields should be a string')
+
+    default:
+      // eslint-disable-next-line unicorn/no-null
+      return null
   }
 }

@@ -13,6 +13,7 @@ const LinkButton: FC<Props> = ({ text, className, color, ...props }) => {
   return (
     <Link
       {...props}
+      rel='stylesheet'
       className={`bg-transparent font-semibold hover:text-fontcolor-white py-2 px-4 ml-4 border hover:border-transparent 
       ${color === 'primary' && primaryColor} 
       ${color === 'blue' && blueColor}

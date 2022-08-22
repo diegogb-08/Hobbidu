@@ -1,4 +1,3 @@
-import type { User } from '@prisma/client'
 import { Authenticator } from 'remix-auth'
 import { sessionStorage } from '~/services/session.server'
 import { FormStrategy } from 'remix-auth-form'
@@ -7,20 +6,14 @@ import { GoogleStrategy } from 'remix-auth-google'
 import { db } from '~/utils/db.server'
 
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL } from './constants'
-
-import type { TypedResponse } from '@remix-run/server-runtime'
 import invariant from 'tiny-invariant'
-import type { ActionData } from './user.server'
 import { login } from './user.server'
+import type { ActionAuth } from '~/types/types'
 
-export interface UserAuth {
-  user: User
-  token: string
-}
-
-export type ErrorAuth = TypedResponse<{ errors: ActionData }>
-
-export const authenticator = new Authenticator<UserAuth | ErrorAuth | null>(sessionStorage)
+export const authenticator = new Authenticator<ActionAuth>(sessionStorage, {
+  sessionErrorKey: 'sessionErrorKey',
+  throwOnError: true
+})
 
 invariant(GOOGLE_CLIENT_ID, 'Missing Google client id.')
 invariant(GOOGLE_CLIENT_SECRET, 'Missing Google client secret.')
