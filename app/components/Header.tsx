@@ -18,7 +18,7 @@ const Header = ({ user }: { user?: User }) => {
         ) : (
           !matches[1].pathname.includes('account') && (
             <>
-              <LinkButton to='account/register' text='Register' color='blue' />
+              <LinkButton to='account/register' text='Register' color='blue' className='hidden md:inline' />
               <LinkButton to='account/login' text='Login' color='primary' />
             </>
           )
