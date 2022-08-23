@@ -1,14 +1,15 @@
 import { Authenticator } from 'remix-auth'
 import { sessionStorage } from '~/services/session.server'
 import { FormStrategy } from 'remix-auth-form'
-import { GoogleStrategy } from 'remix-auth-google'
+import { GoogleStrategy, SocialsProvider } from 'remix-auth-socials'
 
 import { db } from '~/utils/db.server'
 
-import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL } from './constants'
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CALLBACK_URL } from './constants'
 import invariant from 'tiny-invariant'
 import { login } from './user.server'
 import type { ActionAuth } from '~/types/types'
+import { ActionValue } from '~/types/types'
 
 export const authenticator = new Authenticator<ActionAuth>(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
@@ -17,23 +18,24 @@ export const authenticator = new Authenticator<ActionAuth>(sessionStorage, {
 
 invariant(GOOGLE_CLIENT_ID, 'Missing Google client id.')
 invariant(GOOGLE_CLIENT_SECRET, 'Missing Google client secret.')
-invariant(GOOGLE_CALLBACK_URL, 'Missing Google redirect uri.')
+invariant(CALLBACK_URL, 'Missing Google redirect uri.')
 
 authenticator
   .use(
     new FormStrategy(async ({ form: formData }) => {
       return await login(formData)
     }),
-    'standard'
+    ActionValue.STANDARD
   )
   .use(
     new GoogleStrategy(
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: GOOGLE_CALLBACK_URL
+        scope: ['openid', 'email', 'profile'],
+        callbackURL: `${CALLBACK_URL}/auth/${SocialsProvider.GOOGLE}/callback`
       },
-      async ({ accessToken, profile }) => {
+      async ({ profile, accessToken }) => {
         const user = await db.user.findUnique({
           where: {
             email: profile.emails[0].value
@@ -56,5 +58,5 @@ authenticator
         }
       }
     ),
-    'google'
+    ActionValue.GOOGLE
   )
