@@ -8,10 +8,9 @@ import { db } from '~/utils/db.server'
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CALLBACK_URL } from './constants'
 import invariant from 'tiny-invariant'
 import { login } from './user.server'
-import type { ActionAuth } from '~/types/types'
-import { ActionValue } from '~/types/types'
+import { AuthStrategy } from '~/types/types'
 
-export const authenticator = new Authenticator<ActionAuth>(sessionStorage, {
+export const authenticator = new Authenticator(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
   throwOnError: true
 })
@@ -25,7 +24,7 @@ authenticator
     new FormStrategy(async ({ form: formData }) => {
       return await login(formData)
     }),
-    ActionValue.STANDARD
+    AuthStrategy.STANDARD
   )
   .use(
     new GoogleStrategy(
@@ -58,5 +57,5 @@ authenticator
         }
       }
     ),
-    ActionValue.GOOGLE
+    AuthStrategy.GOOGLE
   )

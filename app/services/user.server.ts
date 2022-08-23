@@ -1,19 +1,20 @@
 import { db } from '~/utils/db.server'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import { json } from '@remix-run/node'
 import { SECRET } from './constants'
 import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-import type { ActionData } from '~/types/types'
 import { AuthorizationError } from 'remix-auth'
 import { getSession } from './session.server'
+import type { TypedResponse } from '@remix-run/server-runtime'
+import type { Validation } from '~/types/types'
 
 export enum SessionErrorKey {
   EmptyFields = 'empty_fields',
   IncorrectFields = 'incorrect_fields',
   WrongFieldType = 'wrong_field_type',
   MissingSecret = 'missing_secret',
-  IncorrectDetails = 'incorrect_details'
+  IncorrectDetails = 'incorrect_details',
+  UniqueFieldsRequired = 'unique_fields_required'
 }
 
 export const login = async (formData: FormData) => {
@@ -57,16 +58,8 @@ export const register = async (request: Request) => {
   const email = formData.get('email')
   const password = formData.get('password')
 
-  const errors: ActionData = {
-    name: name ? undefined : 'Full name is required',
-    user_name: user_name ? undefined : 'User name is required',
-    email: email ? undefined : 'Email is required',
-    password: password ? undefined : 'Password is required'
-  }
-
-  const hasErrors = Object.values(errors).some(Boolean)
-  if (hasErrors) {
-    return json<{ errors: ActionData }>({ errors })
+  if (!name || !user_name || !email || !password) {
+    throw new Error(SessionErrorKey.EmptyFields)
   }
 
   if (
@@ -75,7 +68,7 @@ export const register = async (request: Request) => {
     typeof email !== 'string' ||
     typeof password !== 'string'
   ) {
-    throw new TypeError(`Form submitted incorrectly!`)
+    throw new TypeError(SessionErrorKey.WrongFieldType)
   }
 
   try {
@@ -83,34 +76,50 @@ export const register = async (request: Request) => {
     return await db.user.create({
       data: { name, user_name, email, password: hashedPassword }
     })
-  } catch (error) {
-    console.error(error)
-    if (error instanceof PrismaClientKnownRequestError) {
-      const [, message, location] = error.message.split(':')
-      return { error, message: message + location }
-    }
-    return json<{ errors: ActionData }>({ errors })
+  } catch {
+    throw new Error(SessionErrorKey.UniqueFieldsRequired)
   }
 }
 
-export const validateLogin = async (request: Request) => {
+export const validate = async (request: Request, error?: string): Promise<TypedResponse<Validation> | null> => {
+  const clonedRequest = new Request(request)
   const session = await getSession(request.headers.get('Cookie'))
   const sessionErrorKey: { message: SessionErrorKey } | undefined = session.get('sessionErrorKey')
-  switch (sessionErrorKey?.message) {
+  const formData = await clonedRequest.formData()
+  const formValues = {
+    name: formData.get('name') as string,
+    user_name: formData.get('user_name') as string,
+    email: formData.get('email') as string,
+    password: formData.get('password') as string
+  }
+
+  switch (error || sessionErrorKey?.message) {
     case SessionErrorKey.EmptyFields:
-      return json<{ errors: ActionData }>({
+      return json<Validation>({
         errors: {
-          email: 'Email is required',
-          password: 'Password is required'
-        }
+          email: formValues.email ? undefined : 'Email cannot be empty',
+          name: formValues.name ? undefined : 'Name cannot be empty',
+          password: formValues.password ? undefined : 'Password cannot be empty',
+          user_name: formValues.user_name ? undefined : 'User Name cannot be empty'
+        },
+        values: formValues
       })
     case SessionErrorKey.IncorrectDetails:
     case SessionErrorKey.IncorrectFields:
-      return json<{ errors: ActionData }>({
+      return json<Validation>({
         errors: {
-          email: 'Email not found',
+          email: 'Email does not exist',
           password: 'Password is incorrect'
-        }
+        },
+        values: formValues
+      })
+    case SessionErrorKey.UniqueFieldsRequired:
+      return json<Validation>({
+        errors: {
+          email: 'This email already exist',
+          user_name: 'This user name already exist'
+        },
+        values: formValues
       })
     case SessionErrorKey.MissingSecret:
       throw new Error('Secret is missing')

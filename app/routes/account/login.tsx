@@ -1,17 +1,17 @@
-import { Form, useActionData, useLoaderData } from '@remix-run/react'
+import { Form, useLoaderData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { authenticator } from '~/services/auth.server'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-import type { ActionAuth } from '~/types/types'
-import { ActionValue } from '~/types/types'
+import type { Validation } from '~/types/types'
+import { AuthStrategy } from '~/types/types'
 import GoogleButton from '~/components/Buttons/GoogleButton'
 import AuthContainer from '~/components/Layouts/AuthContainer'
-import { validateLogin } from '~/services/user.server'
+import { validate } from '~/services/user.server'
 import { SocialsProvider } from 'remix-auth-socials'
 
-export const action: ActionFunction = async ({ request }): Promise<ActionAuth | null> => {
-  return await authenticator.authenticate(ActionValue.STANDARD, request, {
+export const action: ActionFunction = async ({ request }) => {
+  return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
     successRedirect: '/',
     failureRedirect: '/account/login',
     throwOnError: true
@@ -22,12 +22,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
     successRedirect: '/'
   })
-  return validateLogin(request)
+  return validate(request)
 }
 
 const Login = () => {
-  const actionData = useActionData<typeof action>()
-  const loaderData = useLoaderData()
+  const data = useLoaderData<Validation>()
 
   return (
     <AuthContainer>
@@ -39,18 +38,18 @@ const Login = () => {
           placeholder='email@email.com'
           type='email'
           name='email'
-          defaultValue={actionData?.email}
-          isError={!!loaderData?.errors?.email}
-          helperText={loaderData?.errors?.email}
+          defaultValue={data?.errors.email}
+          isError={!!data?.errors?.email}
+          helperText={data?.errors?.email}
         />
         <div className='h-8' />
         <TextField
           text='Password'
           type='password'
           name='password'
-          defaultValue={actionData?.password}
-          isError={!!loaderData?.errors?.password}
-          helperText={loaderData?.errors?.password}
+          defaultValue={data?.errors.password}
+          isError={!!data?.errors?.password}
+          helperText={data?.errors?.password}
         />
         <div className='h-8' />
         <SubmitButton />

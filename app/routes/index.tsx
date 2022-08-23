@@ -2,9 +2,8 @@ import type { LoaderFunction } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import AppContainer from '~/components/Layouts/AppContainer'
 import { authenticator } from '~/services/auth.server'
-import type { ActionAuth } from '~/types/types'
 
-export const loader: LoaderFunction = async ({ request }): Promise<ActionAuth | null> => {
+export const loader: LoaderFunction = async ({ request }) => {
   return await authenticator.isAuthenticated(request)
 }
 

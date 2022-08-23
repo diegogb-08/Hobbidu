@@ -2,22 +2,36 @@ import { Form, useActionData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-import { register } from '~/services/user.server'
+import { register, validate } from '~/services/user.server'
 import AuthContainer from '~/components/Layouts/AuthContainer'
 import GoogleButton from '~/components/Buttons/GoogleButton'
 import { authenticator } from '~/services/auth.server'
-import { ActionValue } from '~/types/types'
+import type { Validation } from '~/types/types'
+import { AuthStrategy } from '~/types/types'
 import { SocialsProvider } from 'remix-auth-socials'
 
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = new Request(request)
-  const response = await register(request)
-  if (response) {
-    return await authenticator.authenticate(ActionValue.STANDARD, clonedRequest, {
-      successRedirect: '/'
-    })
+  const validateRquest = new Request(request)
+  try {
+    const response = await register(request)
+    if (response) {
+      return await authenticator.authenticate(AuthStrategy.STANDARD, clonedRequest, {
+        successRedirect: '/',
+        failureRedirect: '/account/login',
+        throwOnError: true
+      })
+    }
+    return response
+  } catch (error) {
+    if (error instanceof Error) {
+      const message = error.message
+      return validate(validateRquest, message)
+    }
+    console.error({ error })
+    // eslint-disable-next-line unicorn/no-null
+    return null
   }
-  return response
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -27,7 +41,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 const Register = () => {
-  const actionData = useActionData<typeof action>()
+  const actionData = useActionData<Validation>()
 
   return (
     <AuthContainer>
@@ -39,8 +53,8 @@ const Register = () => {
           placeholder='Diego Garcia Brisa'
           type='text'
           name='name'
-          defaultValue={actionData?.name}
-          isError={!!actionData?.errors?.name}
+          defaultValue={actionData?.values?.name as string}
+          isError={!!actionData?.errors}
           helperText={actionData?.errors?.name}
         />
         <div className='h-8' />
@@ -49,8 +63,8 @@ const Register = () => {
           placeholder='Diego.08'
           type='text'
           name='user_name'
-          defaultValue={actionData?.user_name}
-          isError={!!actionData?.errors?.user_name}
+          defaultValue={actionData?.values?.user_name as string}
+          isError={!!actionData?.errors}
           helperText={actionData?.errors?.user_name}
         />
         <div className='h-8' />
@@ -59,8 +73,8 @@ const Register = () => {
           placeholder='email@email.com'
           type='email'
           name='email'
-          defaultValue={actionData?.email}
-          isError={!!actionData?.errors?.email}
+          defaultValue={actionData?.values?.email as string}
+          isError={!!actionData?.errors}
           helperText={actionData?.errors?.email}
         />
         <div className='h-8' />
@@ -68,8 +82,8 @@ const Register = () => {
           text='Password'
           type='password'
           name='password'
-          defaultValue={actionData?.password}
-          isError={!!actionData?.errors?.password}
+          defaultValue={actionData?.values?.password as string}
+          isError={!!actionData?.errors}
           helperText={actionData?.errors?.password}
         />
         <div className='h-8' />
