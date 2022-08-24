@@ -1,33 +1,47 @@
-import { Form, useLoaderData } from '@remix-run/react'
+import { Form, useActionData, useLoaderData } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { authenticator } from '~/services/auth.server'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-import type { Validation } from '~/types/types'
+import type { FormValues, Validation } from '~/types/types'
 import { AuthStrategy } from '~/types/types'
 import GoogleButton from '~/components/Buttons/GoogleButton'
 import AuthContainer from '~/components/Layouts/AuthContainer'
+import type { SessionErrorKey } from '~/services/user.server'
 import { validate } from '~/services/user.server'
 import { SocialsProvider } from 'remix-auth-socials'
+import { getSession } from '~/services/session.server'
 
 export const action: ActionFunction = async ({ request }) => {
-  return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
+  const clonedRequest = new Request(request)
+  const formData = await clonedRequest.formData()
+  const formValues = {
+    email: formData?.get('email'),
+    password: formData?.get('password')
+  }
+
+  await authenticator.authenticate(AuthStrategy.STANDARD, request, {
     successRedirect: '/',
     failureRedirect: '/account/login',
     throwOnError: true
   })
+  return formValues
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  const sessionErrorKey: { message: SessionErrorKey } | undefined = session.get('sessionErrorKey')
+
   await authenticator.isAuthenticated(request, {
     successRedirect: '/'
   })
-  return validate(request)
+  return validate(sessionErrorKey?.message)
 }
 
 const Login = () => {
   const data = useLoaderData<Validation>()
-
+  const action = useActionData<FormValues>()
+  console.log(action)
   return (
     <AuthContainer>
       <Form method='post' action='/account/login' className='flex w-full flex-col items-center justify-center'>
@@ -38,7 +52,7 @@ const Login = () => {
           placeholder='email@email.com'
           type='email'
           name='email'
-          defaultValue={data?.errors.email}
+          defaultValue={action?.email as string}
           isError={!!data?.errors?.email}
           helperText={data?.errors?.email}
         />
@@ -47,7 +61,7 @@ const Login = () => {
           text='Password'
           type='password'
           name='password'
-          defaultValue={data?.errors.password}
+          defaultValue={action?.password as string}
           isError={!!data?.errors?.password}
           helperText={data?.errors?.password}
         />

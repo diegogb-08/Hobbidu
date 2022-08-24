@@ -5,11 +5,11 @@ export enum AuthStrategy {
   GOOGLE = 'google'
 }
 
-export interface Values {
+export interface FormValues {
   name?: FormDataEntryValue | null
   user_name?: FormDataEntryValue | null
-  email: FormDataEntryValue | null
-  password: FormDataEntryValue | null
+  email?: FormDataEntryValue | null
+  password?: FormDataEntryValue | null
 }
 
 export interface Errors {
@@ -21,7 +21,7 @@ export interface Errors {
 
 export interface Validation {
   errors: Errors
-  values: Values
+  values?: FormValues
 }
 export interface UserAuth {
   user: User

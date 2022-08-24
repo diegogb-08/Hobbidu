@@ -12,11 +12,11 @@ import { SocialsProvider } from 'remix-auth-socials'
 
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = new Request(request)
-  const validateRquest = new Request(request)
+  const formData = await clonedRequest.formData()
   try {
-    const response = await register(request)
+    const response = await register(formData)
     if (response) {
-      return await authenticator.authenticate(AuthStrategy.STANDARD, clonedRequest, {
+      return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
         successRedirect: '/',
         failureRedirect: '/account/login',
         throwOnError: true
@@ -26,7 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
   } catch (error) {
     if (error instanceof Error) {
       const message = error.message
-      return validate(validateRquest, message)
+      return validate(message, formData)
     }
     console.error({ error })
     // eslint-disable-next-line unicorn/no-null

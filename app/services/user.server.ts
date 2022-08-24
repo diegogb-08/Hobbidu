@@ -4,7 +4,6 @@ import { SECRET } from './constants'
 import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import { AuthorizationError } from 'remix-auth'
-import { getSession } from './session.server'
 import type { TypedResponse } from '@remix-run/server-runtime'
 import type { Validation } from '~/types/types'
 
@@ -51,8 +50,7 @@ export const login = async (formData: FormData) => {
   throw new AuthorizationError(SessionErrorKey.WrongFieldType)
 }
 
-export const register = async (request: Request) => {
-  const formData = await request.formData()
+export const register = async (formData: FormData) => {
   const name = formData.get('name')
   const user_name = formData.get('user_name')
   const email = formData.get('email')
@@ -81,19 +79,18 @@ export const register = async (request: Request) => {
   }
 }
 
-export const validate = async (request: Request, error?: string): Promise<TypedResponse<Validation> | null> => {
-  const clonedRequest = new Request(request)
-  const session = await getSession(request.headers.get('Cookie'))
-  const sessionErrorKey: { message: SessionErrorKey } | undefined = session.get('sessionErrorKey')
-  const formData = await clonedRequest.formData()
+export const validate = (
+  error: string | SessionErrorKey | undefined,
+  formData?: FormData
+): TypedResponse<Validation> | null => {
   const formValues = {
-    name: formData.get('name') as string,
-    user_name: formData.get('user_name') as string,
-    email: formData.get('email') as string,
-    password: formData.get('password') as string
+    name: formData ? formData?.get('name') : undefined,
+    user_name: formData ? formData?.get('user_name') : undefined,
+    email: formData ? formData?.get('email') : undefined,
+    password: formData ? formData?.get('password') : undefined
   }
 
-  switch (error || sessionErrorKey?.message) {
+  switch (error) {
     case SessionErrorKey.EmptyFields:
       return json<Validation>({
         errors: {

@@ -12,6 +12,7 @@ import { AuthStrategy } from '~/types/types'
 
 export const authenticator = new Authenticator(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
+  sessionKey: 'sessionKey',
   throwOnError: true
 })
 
