@@ -1,5 +1,7 @@
+import AppContainer from '~/components/Layouts/AppContainer'
+
 const Profile = () => {
-  return <div>Profile</div>
+  return <AppContainer>Profile</AppContainer>
 }
 
 export default Profile

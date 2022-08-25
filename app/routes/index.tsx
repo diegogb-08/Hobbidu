@@ -1,3 +1,5 @@
+import AppContainer from '~/components/Layouts/AppContainer'
+
 export default function Index() {
-  return <div className='h-full w-full bg-secondary'>hello Index</div>
+  return <AppContainer>INDEX</AppContainer>
 }

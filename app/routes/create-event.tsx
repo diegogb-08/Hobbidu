@@ -1,5 +1,7 @@
+import AppContainer from '~/components/Layouts/AppContainer'
+
 const CreateEvent = () => {
-  return <div>Create Event</div>
+  return <AppContainer>Create Event</AppContainer>
 }
 
 export default CreateEvent
