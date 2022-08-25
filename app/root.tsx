@@ -1,5 +1,7 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node'
-import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react'
+import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node'
+import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
+import Header from './components/Header'
+import { authenticator } from './services/auth.server'
 import styles from './tailwind.css'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }]
@@ -11,14 +13,21 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1'
 })
 
+export const loader: LoaderFunction = async ({ request }) => {
+  return await authenticator.isAuthenticated(request)
+}
+
 export default function App() {
+  const data = useLoaderData<typeof loader>()
+
   return (
     <html lang='en' suppressHydrationWarning={true}>
       <head>
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className='bg-secondary h-screen w-screen justify-center items-center'>
+        <Header user={data?.user} />
         <Outlet />
         <ScrollRestoration />
         <Scripts />

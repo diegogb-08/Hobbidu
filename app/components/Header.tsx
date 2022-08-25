@@ -9,10 +9,10 @@ const Header = ({ user }: { user?: User }) => {
   const matches = useMatches()
   return (
     <div className='box-border h-16 flex-1 flex justify-center items-center bg-white border-b-[0.5px] border-b-gray'>
-      <Link to='/' className='h-full flex items-center'>
-        <img className='h-4/5' src={logo} alt='logo' />
-      </Link>
-      <div className='absolute right-4'>
+      <div className='h-full w-[975px] flex justify-between items-center'>
+        <Link to='/' className='h-full flex items-center'>
+          <img className='h-4/5' src={logo} alt='logo' />
+        </Link>
         {user ? (
           <NavBar />
         ) : (
