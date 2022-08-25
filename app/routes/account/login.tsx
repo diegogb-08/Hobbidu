@@ -1,4 +1,4 @@
-import { Form, useActionData, useLoaderData } from '@remix-run/react'
+import { Form, useActionData, useLoaderData, useTransition } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { authenticator } from '~/services/auth.server'
 import SubmitButton from '~/components/Buttons/SubmitButton'
@@ -15,17 +15,14 @@ import { getSession } from '~/services/session.server'
 export const action: ActionFunction = async ({ request }) => {
   const clonedRequest = new Request(request)
   const formData = await clonedRequest.formData()
-  const formValues = {
-    email: formData?.get('email'),
-    password: formData?.get('password')
-  }
+  const values = Object.fromEntries(formData)
 
   await authenticator.authenticate(AuthStrategy.STANDARD, request, {
     successRedirect: '/',
     failureRedirect: '/account/login',
     throwOnError: true
   })
-  return formValues
+  return values
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -41,7 +38,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 const Login = () => {
   const data = useLoaderData<Validation>()
   const action = useActionData<FormValues>()
-  console.log(action)
+  const transition = useTransition()
+  const isSubmitting = transition.state === 'submitting' || transition.state === 'loading'
   return (
     <AuthContainer>
       <Form method='post' action='/account/login' className='flex w-full flex-col items-center justify-center'>
@@ -66,7 +64,7 @@ const Login = () => {
           helperText={data?.errors?.password}
         />
         <div className='h-8' />
-        <SubmitButton />
+        <SubmitButton isSubmitting={isSubmitting} disabled={isSubmitting} />
       </Form>
       <div className='border-[0.5px] h-[1px] border-gray border-solid w-full justify-center flex'>
         <span className='relative bottom-[14px] text-gray bg-white text-center w-8 h-8'>or</span>

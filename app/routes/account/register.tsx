@@ -1,4 +1,4 @@
-import { Form, useActionData } from '@remix-run/react'
+import { Form, useActionData, useTransition } from '@remix-run/react'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
@@ -42,7 +42,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 const Register = () => {
   const actionData = useActionData<Validation>()
-
+  const transition = useTransition()
+  const isSubmitting = transition.state === 'submitting'
   return (
     <AuthContainer>
       <Form method='post' action='/account/register' className='flex w-full flex-col items-center justify-center'>
@@ -54,7 +55,7 @@ const Register = () => {
           type='text'
           name='name'
           defaultValue={actionData?.values?.name as string}
-          isError={!!actionData?.errors}
+          isError={!!actionData?.errors?.name}
           helperText={actionData?.errors?.name}
         />
         <div className='h-8' />
@@ -64,7 +65,7 @@ const Register = () => {
           type='text'
           name='user_name'
           defaultValue={actionData?.values?.user_name as string}
-          isError={!!actionData?.errors}
+          isError={!!actionData?.errors?.user_name}
           helperText={actionData?.errors?.user_name}
         />
         <div className='h-8' />
@@ -74,7 +75,7 @@ const Register = () => {
           type='email'
           name='email'
           defaultValue={actionData?.values?.email as string}
-          isError={!!actionData?.errors}
+          isError={!!actionData?.errors?.email}
           helperText={actionData?.errors?.email}
         />
         <div className='h-8' />
@@ -83,11 +84,11 @@ const Register = () => {
           type='password'
           name='password'
           defaultValue={actionData?.values?.password as string}
-          isError={!!actionData?.errors}
+          isError={!!actionData?.errors?.password}
           helperText={actionData?.errors?.password}
         />
         <div className='h-8' />
-        <SubmitButton />
+        <SubmitButton isSubmitting={isSubmitting} disabled={isSubmitting} />
       </Form>
       <div className='border-[0.5px] h-[1px] border-gray border-solid w-full justify-center flex'>
         <span className='relative bottom-[14px] text-gray bg-white text-center w-8 h-8'>or</span>
