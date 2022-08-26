@@ -58,8 +58,6 @@ model Hobby {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   hobby_name    String    @unique(map: "hobby_name_1")
-  user_id       String   @db.ObjectId
-  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -81,11 +79,10 @@ model User {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   email         String         @unique(map: "email_1")
-  hobbies       Hobby[]
+  hobbies       String[]
   location      Location?
   name          String
   password      String
-  /// Multiple data types found: Float: 50%, Int: 50% out of 6 sampled entries
   phone_number  String?
   profile_img   String?
   user_name     String         @unique(map: "user_name_1")

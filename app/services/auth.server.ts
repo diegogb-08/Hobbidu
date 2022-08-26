@@ -8,9 +8,10 @@ import { db } from '~/utils/db.server'
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CALLBACK_URL } from './constants'
 import invariant from 'tiny-invariant'
 import { login } from './user.server'
+import type { UserAuth } from '~/types/types'
 import { AuthStrategy } from '~/types/types'
 
-export const authenticator = new Authenticator(sessionStorage, {
+export const authenticator = new Authenticator<UserAuth>(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
   sessionKey: 'sessionKey',
   throwOnError: true

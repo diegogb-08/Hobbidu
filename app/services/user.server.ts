@@ -5,7 +5,8 @@ import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import { AuthorizationError } from 'remix-auth'
 import type { TypedResponse } from '@remix-run/server-runtime'
-import type { Validation } from '~/types/types'
+import type { UserAuth, Validation } from '~/types/types'
+import type { User } from '@prisma/client'
 
 export enum SessionErrorKey {
   EmptyFields = 'empty_fields',
@@ -16,7 +17,7 @@ export enum SessionErrorKey {
   UniqueFieldsRequired = 'unique_fields_required'
 }
 
-export const login = async (formData: FormData) => {
+export const login = async (formData: FormData): Promise<UserAuth> => {
   const email = formData.get('email')
   const password = formData.get('password')
 
@@ -50,7 +51,7 @@ export const login = async (formData: FormData) => {
   throw new AuthorizationError(SessionErrorKey.WrongFieldType)
 }
 
-export const register = async (formData: FormData) => {
+export const register = async (formData: FormData): Promise<User> => {
   const name = formData.get('name')
   const user_name = formData.get('user_name')
   const email = formData.get('email')

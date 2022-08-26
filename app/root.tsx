@@ -3,6 +3,7 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderD
 import Header from './components/Header'
 import { authenticator } from './services/auth.server'
 import styles from './tailwind.css'
+import type { UserAuth } from './types/types'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }]
 
@@ -13,7 +14,7 @@ export const meta: MetaFunction = () => ({
   viewport: 'width=device-width,initial-scale=1'
 })
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }): Promise<UserAuth | null> => {
   return await authenticator.isAuthenticated(request)
 }
 
