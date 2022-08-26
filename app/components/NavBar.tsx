@@ -8,7 +8,7 @@ import { Routes } from '~/routes/routes'
 const NavBar = () => {
   const match = useMatches()
   return (
-    <div className='flex w-80 justify-between'>
+    <nav className='flex w-80 justify-between'>
       <Link to={Routes.HOME}>
         <IconButton>
           <HomeIcon color={match[1].id.includes('index') ? '#f05356' : '#acacacc4'} />
@@ -24,7 +24,7 @@ const NavBar = () => {
           <AvatarIcon color={match[1].id.includes(Routes.PROFILE) ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
-    </div>
+    </nav>
   )
 }
 
