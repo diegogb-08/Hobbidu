@@ -13,6 +13,8 @@ export interface FormValues {
 }
 
 export interface Errors {
+  message?: string
+  emptyFields?: boolean
   name?: string
   user_name?: string
   email?: string

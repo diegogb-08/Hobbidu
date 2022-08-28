@@ -44,7 +44,6 @@ const Login = () => {
     <AuthContainer>
       <Form method='post' action='/account/login' className='flex w-full flex-col items-center justify-center'>
         <h2 className='text-4xl text-center'>Login</h2>
-        <div className='h-8' />
         <TextField
           text='Email'
           placeholder='email@email.com'
@@ -52,18 +51,19 @@ const Login = () => {
           name='email'
           defaultValue={action?.email as string}
           isError={!!data?.errors?.email}
-          helperText={data?.errors?.email}
+          helperText={data?.errors.emptyFields ? data?.errors?.email : undefined}
         />
-        <div className='h-8' />
         <TextField
           text='Password'
           type='password'
           name='password'
           defaultValue={action?.password as string}
           isError={!!data?.errors?.password}
-          helperText={data?.errors?.password}
+          helperText={data?.errors.emptyFields ? data?.errors?.password : undefined}
         />
-        <div className='h-8' />
+        <div className='h-16 w-full flex justify-center'>
+          <span className='text-red text-center'>{data?.errors?.message}</span>
+        </div>
         <SubmitButton isSubmitting={isSubmitting} disabled={isSubmitting} />
       </Form>
       <div className='border-[0.5px] h-[1px] border-gray border-solid w-full justify-center flex'>

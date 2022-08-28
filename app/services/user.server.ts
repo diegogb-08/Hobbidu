@@ -95,6 +95,7 @@ export const validate = (
     case SessionErrorKey.EmptyFields:
       return json<Validation>({
         errors: {
+          emptyFields: true,
           email: formValues.email ? undefined : 'Email cannot be empty',
           name: formValues.name ? undefined : 'Name cannot be empty',
           password: formValues.password ? undefined : 'Password cannot be empty',
@@ -106,6 +107,7 @@ export const validate = (
     case SessionErrorKey.IncorrectFields:
       return json<Validation>({
         errors: {
+          message: 'The Email or Password does not exist or is incorrect',
           email: 'Email does not exist',
           password: 'Password is incorrect'
         },
@@ -114,6 +116,7 @@ export const validate = (
     case SessionErrorKey.UniqueFieldsRequired:
       return json<Validation>({
         errors: {
+          message: 'The Email or User Name already exist',
           email: 'This email already exist',
           user_name: 'This user name already exist'
         },

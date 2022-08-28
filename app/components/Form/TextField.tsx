@@ -30,7 +30,9 @@ const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputPr
         m-0 focus:bg-white focus:border-blue focus:outline-non ${className}`}
         {...inputProps}
       />
-      {helperText && <span className={`${isError ? 'text-red' : 'text-gray'}`}>{helperText}</span>}
+      <div className='h-4 w-full flex items-start pl-2'>
+        {helperText && <span className={`text-xs ${isError ? 'text-red' : 'text-gray'}`}>{helperText}</span>}
+      </div>
     </div>
   )
 }
