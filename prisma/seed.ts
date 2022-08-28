@@ -1,63 +1,63 @@
-import { PrismaClient } from '@prisma/client';
-const db = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+const database = new PrismaClient()
 
-async function seed() {
-  const user = await db.user.create({
+const seed = async () => {
+  const user = await database.user.create({
     data: {
-      user_name: 'Diego.08',
+      user_name: 'Admin',
       // this is a hashed version of 'twixrox'
-      password: '1234',
-      email: 'd.garciabrisa@gmail.com',
-      name: 'Diego',
-    },
-  });
+      password: '123456',
+      email: 'admin2@admin.com',
+      name: 'Diego'
+    }
+  })
   await Promise.all(
     getHobbies().map((hobby) => {
-      const data = { user_id: user.id, ...hobby };
-      return db.hobby.create({ data });
+      const data = { user_id: user.id, ...hobby }
+      return database.hobby.create({ data })
     })
-  );
+  )
 }
 
-seed();
+seed()
 
-function getHobbies() {
+const getHobbies = () => {
   return [
     {
-      hobby_name: 'sport_climbing',
+      name: 'sport_climbing'
     },
     {
-      hobby_name: 'bouldering',
+      name: 'bouldering'
     },
     {
-      hobby_name: 'yoga',
+      name: 'yoga'
     },
     {
-      hobby_name: 'tennis',
+      name: 'tennis'
     },
     {
-      hobby_name: 'football',
+      name: 'football'
     },
     {
-      hobby_name: 'basket',
+      name: 'basket'
     },
     {
-      hobby_name: 'handball',
+      name: 'handball'
     },
     {
-      hobby_name: 'software_engineering',
+      name: 'software_engineering'
     },
     {
-      hobby_name: 'photography',
+      name: 'photography'
     },
     {
-      hobby_name: 'dance',
+      name: 'dance'
     },
     {
-      hobby_name: 'pint_ball',
+      name: 'pint_ball'
     },
     {
-      hobby_name: 'laser_tag',
-    },
-  ];
+      name: 'laser_tag'
+    }
+  ]
 }

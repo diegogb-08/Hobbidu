@@ -14,7 +14,8 @@
     "format": "prettier --write ./app",
     "lint": "eslint ./app --max-warnings=0",
     "lint-fix": "eslint ./app --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "seed": "npx prisma db seed"
   },
   "husky": {
     "hooks": {
