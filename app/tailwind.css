@@ -563,12 +563,12 @@ video {
   margin: 0px;
 }
 
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
 .ml-4 {
   margin-left: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
 }
 
 .box-border {
@@ -627,6 +627,10 @@ video {
   height: 1px;
 }
 
+.h-4 {
+  height: 1rem;
+}
+
 .w-screen {
   width: 100vw;
 }
@@ -671,6 +675,10 @@ video {
   flex-direction: column-reverse;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
 .items-center {
   align-items: center;
 }
@@ -695,12 +703,12 @@ video {
   border-radius: 1.5rem;
 }
 
-.border-\[0\.5px\] {
-  border-width: 0.5px;
-}
-
 .border {
   border-width: 1px;
+}
+
+.border-\[0\.5px\] {
+  border-width: 0.5px;
 }
 
 .border-b-\[0\.5px\] {
@@ -735,7 +743,7 @@ video {
 }
 
 .bg-transparent {
-  background-color: '#fafafa9';
+  background-color: #fafafa9;
 }
 
 .bg-primary {
@@ -808,6 +816,10 @@ video {
   padding-bottom: 2rem;
 }
 
+.pl-2 {
+  padding-left: 0.5rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -822,8 +834,14 @@ video {
   line-height: 2.5rem;
 }
 
-.font-bold {
-  font-weight: 700;
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 .font-semibold {
@@ -834,9 +852,8 @@ video {
   font-weight: 400;
 }
 
-.text-fontcolor2 {
-  --tw-text-opacity: 1;
-  color: rgb(240 83 86 / var(--tw-text-opacity));
+.font-bold {
+  font-weight: 700;
 }
 
 .text-label {
@@ -868,6 +885,11 @@ video {
   color: #acacacc4;
 }
 
+.text-fontcolor2 {
+  --tw-text-opacity: 1;
+  color: rgb(240 83 86 / var(--tw-text-opacity));
+}
+
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
@@ -881,7 +903,7 @@ video {
 }
 
 .hover\:border-transparent:hover {
-  border-color: '#fafafa9';
+  border-color: #fafafa9;
 }
 
 .hover\:bg-primary:hover {
