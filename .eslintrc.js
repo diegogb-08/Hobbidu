@@ -46,7 +46,6 @@ module.exports = {
       }
     ],
     '@typescript-eslint/naming-convention': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'warn',
     '@typescript-eslint/no-explicit-any': 'warn',
     'no-console': ['warn', { allow: ['warn', 'error', 'debug'] }],
     'no-unused-vars': 'off',
@@ -61,6 +60,7 @@ module.exports = {
     'unicorn/no-process-exit': 'off',
     'unicorn/no-thenable': 'off',
     'unicorn/prefer-ternary': 'off',
+    'unicorn/no-null': 'off',
     'unicorn/prevent-abbreviations': [
       'error',
       {

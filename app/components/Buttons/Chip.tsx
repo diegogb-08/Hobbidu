@@ -1,5 +1,4 @@
 import { Chip } from '@mui/material'
-import { motion } from 'framer-motion'
 
 interface Props<T> {
   obj: T
@@ -7,7 +6,7 @@ interface Props<T> {
   text: string
 }
 const ChipCustom = <T,>({ obj, onClick, text }: Props<T>) => {
-  return <Chip component={motion.div} onClick={() => onClick(obj)} label={text} />
+  return <Chip onClick={() => onClick(obj)} label={text} />
 }
 
 export default ChipCustom

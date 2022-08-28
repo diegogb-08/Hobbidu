@@ -563,12 +563,12 @@ video {
   margin: 0px;
 }
 
-.ml-4 {
-  margin-left: 1rem;
-}
-
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.ml-4 {
+  margin-left: 1rem;
 }
 
 .box-border {
@@ -619,16 +619,16 @@ video {
   height: 16.666667%;
 }
 
-.h-8 {
-  height: 2rem;
+.h-4 {
+  height: 1rem;
 }
 
 .h-\[1px\] {
   height: 1px;
 }
 
-.h-4 {
-  height: 1rem;
+.h-8 {
+  height: 2rem;
 }
 
 .w-screen {
@@ -703,12 +703,12 @@ video {
   border-radius: 1.5rem;
 }
 
-.border {
-  border-width: 1px;
-}
-
 .border-\[0\.5px\] {
   border-width: 0.5px;
+}
+
+.border {
+  border-width: 1px;
 }
 
 .border-b-\[0\.5px\] {
@@ -829,19 +829,18 @@ video {
   line-height: 1.5rem;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
 }
 
-.text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
+.font-bold {
+  font-weight: 700;
 }
 
 .font-semibold {
@@ -852,8 +851,9 @@ video {
   font-weight: 400;
 }
 
-.font-bold {
-  font-weight: 700;
+.text-fontcolor2 {
+  --tw-text-opacity: 1;
+  color: rgb(240 83 86 / var(--tw-text-opacity));
 }
 
 .text-label {
@@ -883,11 +883,6 @@ video {
 
 .text-gray {
   color: #acacacc4;
-}
-
-.text-fontcolor2 {
-  --tw-text-opacity: 1;
-  color: rgb(240 83 86 / var(--tw-text-opacity));
 }
 
 .transition {
