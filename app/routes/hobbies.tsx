@@ -26,7 +26,7 @@ const Hobbies = () => {
   return (
     <div className='flex flex-col flex-1 h-full p-6'>
       <h2 className='text-xl font-bold pb-6'>Please select the hobbies you want to follow!</h2>
-      <div className='flex-wrap'>
+      <div className='flex flex-wrap justify-center'>
         {hobbies.map((hobby) => {
           return (
             <Chip
