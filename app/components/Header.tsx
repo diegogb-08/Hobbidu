@@ -12,16 +12,14 @@ const Header = ({ user }: { user?: User }) => {
       <Link to='/' className='h-full flex items-center'>
         <img className='h-4/5' src={logo} alt='logo' />
       </Link>
-      {user ? (
+      {user && user.hobbies.length > 0 ? (
         <NavBar />
-      ) : (
-        !matches[1].pathname.includes('account') && (
-          <div>
-            <LinkButton to='account/register' text='Register' color='blue' className='hidden md:inline' />
-            <LinkButton to='account/login' text='Login' color='primary' />
-          </div>
-        )
-      )}
+      ) : !matches[1].pathname.includes('account') && !matches[1].pathname.includes('hobbies') ? (
+        <div>
+          <LinkButton to='account/register' text='Register' color='blue' className='hidden md:inline' />
+          <LinkButton to='account/login' text='Login' color='primary' />
+        </div>
+      ) : undefined}
     </header>
   )
 }
