@@ -1,8 +1,7 @@
-import type { Hobby } from '@prisma/client'
+import { Chip } from '@mui/material'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
-import Chip from '~/components/Buttons/Chip'
 import { db } from '~/utils/db.server'
 
 export const loader = async () => {
@@ -12,20 +11,34 @@ export const loader = async () => {
 
 const Hobbies = () => {
   const { hobbies } = useLoaderData<typeof loader>()
-  const [selectedHobbies, setSelectedHobbies] = useState<Hobby[]>([])
+  const [hobbyIds, setHobbyIds] = useState<string[]>([])
 
-  const handleHobby = (hobby: Hobby) => {
-    const newSelectedHobbies = [...selectedHobbies]
-    newSelectedHobbies.push(hobby)
-    setSelectedHobbies(newSelectedHobbies)
+  const handleSelectHobby = (hobbyId: string) => {
+    let newHobbyIds = [...hobbyIds]
+    if (hobbyIds.includes(hobbyId)) {
+      newHobbyIds = hobbyIds.filter((id) => id !== hobbyId)
+    } else {
+      newHobbyIds.push(hobbyId)
+    }
+    setHobbyIds(newHobbyIds)
   }
 
   return (
-    <div className='flex flex-col flex-1 h-full justify-center'>
-      <div className='grid grid-cols-7 gap-2 grid-flow-row'>
-        {hobbies.map((hobby) => (
-          <Chip obj={hobby as unknown as Hobby} onClick={handleHobby} key={hobby.id} text={hobby.name} />
-        ))}
+    <div className='flex flex-col flex-1 h-full p-6'>
+      <h2 className='text-xl font-bold pb-6'>Please select the hobbies you want to follow!</h2>
+      <div className='flex-wrap'>
+        {hobbies.map((hobby) => {
+          return (
+            <Chip
+              style={{ marginRight: '16px', marginBottom: '16px' }}
+              variant={hobbyIds.includes(hobby.id) ? 'filled' : 'outlined'}
+              clickable
+              onClick={() => handleSelectHobby(hobby.id)}
+              key={hobby.id}
+              label={hobby.name.toUpperCase()}
+            />
+          )
+        })}
       </div>
     </div>
   )
