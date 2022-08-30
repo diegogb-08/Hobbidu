@@ -1,9 +1,9 @@
 import type { ActionFunction, LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node'
-import { json, redirect } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
 import Header from './components/Header'
 import { authenticator } from './services/auth.server'
-import { getSession } from './services/session.server'
+import { commitSession, getSession } from './services/session.server'
 import styles from './tailwind.css'
 import type { UserAuth } from './types/types'
 import { db as database } from './utils/db.server'
@@ -29,16 +29,17 @@ export const action: ActionFunction = async ({ request }) => {
     const hobbyIds = formData.get('hobbyIds')?.toString().split(',')
     if (hobbyIds) {
       try {
-        await database.user.update({
+        const userUpdated = await database.user.update({
           data: {
-            ...userAuth.user,
             hobbies: hobbyIds
           },
           where: {
             id: userAuth.user.id
           }
         })
-        return json({ hobbyIds })
+        session.set(authenticator.sessionKey, { user: userUpdated, token: userAuth.token })
+        const headers = new Headers({ 'Set-Cookie': await commitSession(session) })
+        return redirect('/', { headers })
       } catch (error) {
         console.error({ error })
         return redirect('account/login')

@@ -3,7 +3,7 @@ import type { Hobby } from '@prisma/client'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Form, useActionData, useLoaderData, useTransition } from '@remix-run/react'
+import { Form, useActionData, useLoaderData, useMatches, useTransition } from '@remix-run/react'
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import TextField from '~/components/Form/TextField'
@@ -81,8 +81,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 const Hobbies = () => {
   const actionData = useActionData<ActionData>()
   const transition = useTransition()
+  const match = useMatches()
   const { hobbies } = useLoaderData<{ hobbies: Record<string, Hobby> }>()
-  const [hobbyIds, setHobbyIds] = useState<string[]>([])
+  const [hobbyIds, setHobbyIds] = useState<string[]>(match[0].data?.user?.hobbies)
   const isSubmitting = transition.state === 'submitting'
 
   const handleSelectHobby = useCallback(
