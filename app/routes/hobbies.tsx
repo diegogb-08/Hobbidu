@@ -68,7 +68,7 @@ const Hobbies = () => {
       newHobbyIds.push(actionData?.hobbyId)
       setHobbyIds(newHobbyIds)
     }
-  }, [actionData])
+  }, [actionData, hobbies])
 
   return (
     <AppContainer>
