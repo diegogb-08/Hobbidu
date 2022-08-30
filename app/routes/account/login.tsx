@@ -39,7 +39,7 @@ const Login = () => {
   const data = useLoaderData<Validation>()
   const action = useActionData<FormValues>()
   const transition = useTransition()
-  const isSubmitting = transition.state === 'submitting' || transition.state === 'loading'
+  const isSubmitting = transition.state === 'submitting'
   return (
     <AuthContainer>
       <Form method='post' action='/account/login' className='flex w-full flex-col items-center justify-center'>

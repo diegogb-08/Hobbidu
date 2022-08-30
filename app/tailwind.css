@@ -687,6 +687,10 @@ video {
   align-items: center;
 }
 
+.justify-end {
+  justify-content: flex-end;
+}
+
 .justify-center {
   justify-content: center;
 }
@@ -824,6 +828,10 @@ video {
   padding-bottom: 1.5rem;
 }
 
+.pt-6 {
+  padding-top: 1.5rem;
+}
+
 .pl-2 {
   padding-left: 0.5rem;
 }
@@ -834,6 +842,11 @@ video {
 
 .text-xl {
   font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
   line-height: 1.75rem;
 }
 
