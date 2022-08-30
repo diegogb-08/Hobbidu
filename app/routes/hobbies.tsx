@@ -1,13 +1,44 @@
 import { Chip } from '@mui/material'
 import type { Hobby } from '@prisma/client'
-import type { LoaderFunction } from '@remix-run/node'
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Form, useLoaderData } from '@remix-run/react'
+import { Form, useActionData, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import TextField from '~/components/Form/TextField'
 import AppContainer from '~/components/Layouts/AppContainer'
 import { authenticator } from '~/services/auth.server'
+import { getSession } from '~/services/session.server'
+import type { UserAuth } from '~/types/types'
 import { db } from '~/utils/db.server'
+
+export const action: ActionFunction = async ({ request }) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  const userAuth = (await session.get('sessionKey')) as UserAuth | undefined
+
+  const formData = await request.formData()
+  const hobby = formData.get('hobby')
+  console.debug({ hobby })
+  if (userAuth?.user?.id) {
+    if (hobby) {
+      try {
+        const newHobby = await db.hobby.create({
+          data: {
+            name: (hobby as string)?.toUpperCase(),
+            user_id: userAuth?.user?.id
+          }
+        })
+        console.debug({ newHobby })
+        return { hobby }
+      } catch (error) {
+        console.error(error)
+        return { hobby, errors: 'Something went wrong' }
+      }
+    }
+    return { hobby, errors: 'Field cannot be empty' }
+  }
+  return { message: 'Action not authorized.' }
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
@@ -19,6 +50,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 const Hobbies = () => {
+  const actionData = useActionData()
   const { hobbies } = useLoaderData<{ hobbies: Hobby[] }>()
   const [hobbyIds, setHobbyIds] = useState<string[]>([])
 
@@ -31,6 +63,8 @@ const Hobbies = () => {
     }
     setHobbyIds(newHobbyIds)
   }
+
+  console.debug(actionData)
 
   return (
     <AppContainer>
@@ -49,12 +83,30 @@ const Hobbies = () => {
           )
         })}
       </div>
-      <Form className='flex w-full justify-center'>
-        <TextField name='hobby' type='text' />
-        <button type='submit' className='ml-4 h-9 w-40 p-4 text-center flex justify-center items-center'>
+      <Form method='post' className='flex w-full justify-center'>
+        <TextField
+          name='hobby'
+          type='text'
+          maxLength={25}
+          pattern='(^[A-Za-z\s]{3,25})'
+          isError={!!actionData?.errors}
+          defaultValue={actionData?.hobby}
+        />
+        <button
+          type='submit'
+          className='ml-4 h-[38px] w-40 p-4 text-center flex justify-center items-center bg-transparent font-semibold hover:text-fontcolor-white py-2 px-4 border hover:border-transparent rounded hover:bg-primary text-label'
+        >
           Add Hobby
         </button>
       </Form>
+      {actionData?.message && (
+        <h3 className='text-red font-bold text-xl'>
+          {actionData?.message} Please{' '}
+          <Link className='underline' to='account/login'>
+            Login
+          </Link>
+        </h3>
+      )}
     </AppContainer>
   )
 }

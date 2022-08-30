@@ -635,6 +635,14 @@ video {
   height: 2rem;
 }
 
+.h-10 {
+  height: 2.5rem;
+}
+
+.h-\[38px\] {
+  height: 38px;
+}
+
 .w-screen {
   width: 100vw;
 }
@@ -896,6 +904,11 @@ video {
 
 .text-gray {
   color: #acacacc4;
+}
+
+.underline {
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
 }
 
 .filter {
