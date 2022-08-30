@@ -3,7 +3,7 @@ import type { Hobby } from '@prisma/client'
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, useActionData, useLoaderData } from '@remix-run/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import TextField from '~/components/Form/TextField'
 import AppContainer from '~/components/Layouts/AppContainer'
@@ -21,13 +21,13 @@ export const action: ActionFunction = async ({ request }) => {
   if (userAuth?.user?.id) {
     if (hobby) {
       try {
-        await db.hobby.create({
+        const newHobby = await db.hobby.create({
           data: {
             name: (hobby as string)?.toUpperCase(),
             user_id: userAuth?.user?.id
           }
         })
-        return { hobby }
+        return { success: true, hobbyId: newHobby.id }
       } catch (error) {
         console.error(error)
         return { hobby, errors: 'Something went wrong' }
@@ -61,6 +61,14 @@ const Hobbies = () => {
     }
     setHobbyIds(newHobbyIds)
   }
+
+  useEffect(() => {
+    if (actionData?.sucess) {
+      const newHobbyIds = [...hobbyIds]
+      newHobbyIds.push(actionData?.hobbyId)
+      setHobbyIds(newHobbyIds)
+    }
+  }, [actionData])
 
   return (
     <AppContainer>
