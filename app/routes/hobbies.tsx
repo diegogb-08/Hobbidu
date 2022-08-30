@@ -18,17 +18,15 @@ export const action: ActionFunction = async ({ request }) => {
 
   const formData = await request.formData()
   const hobby = formData.get('hobby')
-  console.debug({ hobby })
   if (userAuth?.user?.id) {
     if (hobby) {
       try {
-        const newHobby = await db.hobby.create({
+        await db.hobby.create({
           data: {
             name: (hobby as string)?.toUpperCase(),
             user_id: userAuth?.user?.id
           }
         })
-        console.debug({ newHobby })
         return { hobby }
       } catch (error) {
         console.error(error)
@@ -64,8 +62,6 @@ const Hobbies = () => {
     setHobbyIds(newHobbyIds)
   }
 
-  console.debug(actionData)
-
   return (
     <AppContainer>
       <h2 className='text-xl font-bold pb-6'>Please select the hobbies you want to follow!</h2>
@@ -91,6 +87,7 @@ const Hobbies = () => {
           pattern='(^[A-Za-z\s]{3,25})'
           isError={!!actionData?.errors}
           defaultValue={actionData?.hobby}
+          helperText={actionData?.errors}
         />
         <button
           type='submit'
