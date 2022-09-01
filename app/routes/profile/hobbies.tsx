@@ -151,7 +151,7 @@ const Hobbies = () => {
 
       {hobbyIds.length > 0 && (
         <div>
-          <h3 className='text-lg font-bold pt-6 pb-6'>You can't find your hobby? Add it yourself below</h3>
+          <h3 className='text-lg font-bold pt-6 pb-6'>Selected Hobbies:</h3>
           <div className='flex flex-wrap justify-center'>
             {hobbyIds.map((hobbyId) => {
               const hobby = hobbies[hobbyId]
