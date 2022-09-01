@@ -17,8 +17,8 @@ export const action: ActionFunction = async ({ request }) => {
     const response = await register(formData)
     if (response) {
       return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
-        successRedirect: '/hobbies',
-        failureRedirect: '/account/login',
+        successRedirect: 'profile/hobbies',
+        failureRedirect: 'account/login',
         throwOnError: true
       })
     }

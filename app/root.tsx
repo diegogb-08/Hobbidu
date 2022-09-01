@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
         return redirect('account/login')
       }
     } else {
-      return redirect('hobbies')
+      return redirect('profile/hobbies')
     }
   }
   return redirect('account/login')

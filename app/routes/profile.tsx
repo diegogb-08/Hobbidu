@@ -1,7 +1,12 @@
+import { Outlet } from '@remix-run/react'
 import AppContainer from '~/components/Layouts/AppContainer'
 
 const Profile = () => {
-  return <AppContainer>Profile</AppContainer>
+  return (
+    <AppContainer>
+      <Outlet />
+    </AppContainer>
+  )
 }
 
 export default Profile

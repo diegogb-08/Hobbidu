@@ -7,12 +7,11 @@ import { Form, useActionData, useLoaderData, useMatches, useTransition } from '@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import TextField from '~/components/Form/TextField'
-import AppContainer from '~/components/Layouts/AppContainer'
 import { authenticator } from '~/services/auth.server'
 import { getSession } from '~/services/session.server'
 import type { UserAuth } from '~/types/types'
 import { db } from '~/utils/db.server'
-import SubmitButton from '../components/Buttons/SubmitButton'
+import SubmitButton from '../../components/Buttons/SubmitButton'
 
 interface ActionData {
   success?: boolean
@@ -106,7 +105,7 @@ const Hobbies = () => {
   }, [actionData, hobbies, handleSelectHobby])
 
   return (
-    <AppContainer>
+    <>
       <h2 className='text-xl font-bold pb-6'>Please select the hobbies you want to follow!</h2>
       <div className='flex flex-wrap justify-center'>
         {Object.values(hobbies).map((hobby) => {
@@ -180,7 +179,7 @@ const Hobbies = () => {
           </Form>
         </div>
       )}
-    </AppContainer>
+    </>
   )
 }
 

@@ -7,7 +7,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const userAuth = await authenticator.isAuthenticated(request)
 
   if (userAuth?.user && (!userAuth?.user.hobbies || userAuth?.user.hobbies.length === 0)) {
-    return redirect('hobbies')
+    return redirect('profile/hobbies')
   }
   return null
 }
