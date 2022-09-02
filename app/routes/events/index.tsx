@@ -53,8 +53,8 @@ const Index = () => {
 
   return (
     <>
-      <div className='flex justify-center mt-4'>
-        <div className='inline-block border border-gray rounded p-6'>
+      <div className='flex w-full justify-center mt-4'>
+        <div className='flex flex-col lg:inline-block border border-gray rounded p-6'>
           <span className='font-bold text-lg'>This are the hobbies you can create events</span>
           <div className='flex flex-wrap justify-center mt-4'>
             {eventData?.user?.hobbies.map((hobbyId) => {
@@ -79,7 +79,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <div className='fles fles-1'></div>
+      <div className='flex w-full'></div>
     </>
   )
 }

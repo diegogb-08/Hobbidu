@@ -14,9 +14,9 @@ const NavBar = () => {
           <HomeIcon color={match[1].id.includes('index') ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
-      <Link to={Routes.CREATE_EVENT}>
+      <Link to={Routes.EVENTS}>
         <IconButton>
-          <CalendarPlusIcon color={match[1].id.includes(Routes.CREATE_EVENT) ? '#f05356' : '#acacacc4'} />
+          <CalendarPlusIcon color={match[1].id.includes(Routes.EVENTS) ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
       <Link to={Routes.PROFILE}>
