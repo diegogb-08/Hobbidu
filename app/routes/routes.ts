@@ -1,5 +1,5 @@
 export enum Routes {
   HOME = '/',
-  CREATE_EVENT = '/create-event',
+  CREATE_EVENT = '/events',
   PROFILE = '/profile'
 }
