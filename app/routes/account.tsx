@@ -12,7 +12,7 @@ const Account = () => {
           <Outlet />
         </div>
         <div className='h-1/6 w-full bg-white p-10 rounded border-[0.5px] border-gray flex justify-center items-center'>
-          {matches[2].pathname.includes('login') ? (
+          {matches[2]?.pathname?.includes('login') ? (
             <>
               <p>Don't have an account?</p>
               <Link className='ml-4 font-bold text-fontcolor2' to='register'>
