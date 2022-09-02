@@ -12,7 +12,7 @@ const Header = ({ user }: { user?: User }) => {
       <Link to='/' className='h-full flex items-center'>
         <img className='h-4/5' src={logo} alt='logo' />
       </Link>
-      {user && user.hobbies.length > 0 ? (
+      {user && user?.hobbies?.length > 0 ? (
         <NavBar />
       ) : !matches[1].pathname.includes('account') && !matches[2].pathname.includes('hobbies') ? (
         <div>
