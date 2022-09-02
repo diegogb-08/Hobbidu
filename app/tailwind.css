@@ -583,10 +583,6 @@ video {
   display: block;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .flex {
   display: flex;
 }
@@ -653,10 +649,6 @@ video {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[975px\] {
-  width: 975px;
 }
 
 .w-8 {
@@ -832,12 +824,12 @@ video {
   padding-left: 0.5rem;
 }
 
-.pb-6 {
-  padding-bottom: 1.5rem;
-}
-
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.pb-6 {
+  padding-bottom: 1.5rem;
 }
 
 .text-center {
@@ -847,11 +839,6 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-  line-height: 1.75rem;
 }
 
 .text-base {
@@ -867,6 +854,11 @@ video {
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
 }
 
 .text-xl {
@@ -930,10 +922,6 @@ video {
           text-decoration-line: underline;
 }
 
-.underline-offset-1 {
-  text-underline-offset: 1px;
-}
-
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
@@ -969,11 +957,6 @@ video {
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
-.hover\:text-fontcolor1:hover {
-  --tw-text-opacity: 1;
-  color: rgb(51 51 51 / var(--tw-text-opacity));
-}
-
 .hover\:text-fontcolor2:hover {
   --tw-text-opacity: 1;
   color: rgb(240 83 86 / var(--tw-text-opacity));
@@ -982,14 +965,6 @@ video {
 .hover\:underline:hover {
   -webkit-text-decoration-line: underline;
           text-decoration-line: underline;
-}
-
-.hover\:underline-offset-1:hover {
-  text-underline-offset: 1px;
-}
-
-.hover\:underline-offset-0:hover {
-  text-underline-offset: 0px;
 }
 
 .focus\:border-blue:focus {
@@ -1002,32 +977,6 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-@media (min-width: 768px) {
-  .md\:inline-block {
-    display: inline-block;
-  }
-
-  .md\:inline {
-    display: inline;
-  }
-
-  .md\:w-5\/12 {
-    width: 41.666667%;
-  }
-
-  .md\:w-\[975px\] {
-    width: 975px;
-  }
-
-  .md\:flex-row {
-    flex-direction: row;
-  }
-
-  .md\:p-6 {
-    padding: 1.5rem;
-  }
-}
-
 @media (min-width: 1024px) {
   .lg\:inline-block {
     display: inline-block;
@@ -1037,12 +986,12 @@ video {
     display: inline;
   }
 
-  .lg\:w-\[975px\] {
-    width: 975px;
-  }
-
   .lg\:w-5\/12 {
     width: 41.666667%;
+  }
+
+  .lg\:w-\[975px\] {
+    width: 975px;
   }
 
   .lg\:flex-row {

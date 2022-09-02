@@ -10,7 +10,7 @@ import { getAllEventsByUserId } from '~/services/events.server'
 import type { Event } from '@prisma/client'
 import { getSession } from '~/services/session.server'
 
-interface EventsLoader extends UserAuth {
+export interface EventsLoader extends UserAuth {
   hobbies: HobbiesRecord
   events: Event[]
 }
