@@ -16,8 +16,8 @@ const Header = ({ user }: { user?: User }) => {
         <NavBar />
       ) : !matches[1]?.pathname?.includes('account') && !matches[2]?.pathname?.includes('hobbies') ? (
         <div>
-          <LinkButton to='account/register' text='Register' color='blue' className='hidden md:inline' />
-          <LinkButton to='account/login' text='Login' color='primary' />
+          <LinkButton to='/account/register' text='Register' color='blue' className='hidden md:inline' />
+          <LinkButton to='/account/login' text='Login' color='primary' />
         </div>
       ) : undefined}
     </header>

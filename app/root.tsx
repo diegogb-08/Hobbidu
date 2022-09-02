@@ -42,13 +42,13 @@ export const action: ActionFunction = async ({ request }) => {
         return redirect('/', { headers })
       } catch (error) {
         console.error({ error })
-        return redirect('account/login')
+        return redirect('/account/login')
       }
     } else {
-      return redirect('profile/hobbies')
+      return redirect('/profile/hobbies')
     }
   }
-  return redirect('account/login')
+  return redirect('/account/login')
 }
 
 export default function App() {

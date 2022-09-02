@@ -18,7 +18,7 @@ interface EventsLoader extends UserAuth {
 
 export const loader: LoaderFunction = async ({ request }): Promise<EventsLoader | null> => {
   const userAuth = await authenticator.isAuthenticated(request, {
-    failureRedirect: 'account/login'
+    failureRedirect: '/account/login'
   })
 
   if (userAuth) {

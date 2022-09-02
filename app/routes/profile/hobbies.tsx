@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
 
 export const loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
-    failureRedirect: 'account/login'
+    failureRedirect: '/account/login'
   })
 
   const hobbies = await db.hobby.findMany()
@@ -143,7 +143,7 @@ const Hobbies = () => {
       {actionData?.message && (
         <h3 className='text-red font-bold text-xl'>
           {actionData?.message} Please{' '}
-          <Link className='underline' to='account/login'>
+          <Link className='underline' to='/account/login'>
             Login
           </Link>
         </h3>

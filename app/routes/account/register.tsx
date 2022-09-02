@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request }) => {
     if (response) {
       return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
         successRedirect: 'profile/hobbies',
-        failureRedirect: 'account/login',
+        failureRedirect: '/account/login',
         throwOnError: true
       })
     }
