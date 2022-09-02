@@ -10,7 +10,7 @@ import { getSession } from '~/services/session.server'
 import type { UserAuth } from '~/types/types'
 import type { EventsLoader } from './index'
 import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
-import { GOOGLE_MAPS_API_KEY } from '../../services/constants'
+import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
 
 interface ScheduleLoader extends EventsLoader {
   googleApiKey: string | undefined
@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<ScheduleLoade
       ...userAuth,
       hobbies,
       events,
-      googleApiKey: GOOGLE_MAPS_API_KEY
+      googleApiKey: GOOGLE_PLACES_API_KEY
     }
   }
   return userAuth
@@ -36,7 +36,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<ScheduleLoade
 const Schedule = () => {
   const scheduleId = useId()
   const { hobbies, user, googleApiKey } = useLoaderData<ScheduleLoader | undefined>()
-  const [value, setValue] = useState<string[] | null>(null)
+  const [value, setValue] = useState<string | null>(null)
 
   const [selectedHobbyId, setSelectedHobbyId] = useState<string | undefined>()
 
@@ -73,13 +73,16 @@ const Schedule = () => {
         <GooglePlacesAutocomplete
           apiKey={googleApiKey}
           apiOptions={{
-            id: scheduleId
+            id: scheduleId,
+            language: 'en',
+            region: 'es'
           }}
           selectProps={{
             value,
             onChange: setValue
           }}
           onLoadFailed={(error) => console.error(error)}
+          minLengthAutocomplete={2}
         />
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </Form>
