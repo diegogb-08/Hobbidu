@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'login-background': 'url(/img/login_background.jpg)',
-      },
+        'login-background': 'url(/img/login_background.jpg)'
+      }
     },
     colors: {
       primary: '#f05356',
@@ -15,7 +15,6 @@ module.exports = {
       blue: '#35abec',
       black: '#262626',
       green: '#82c91e',
-      label: '#f05356',
       lable1: '#e87d33',
       lable2: '#0f7fe8',
       red: '#F40612',
@@ -26,8 +25,8 @@ module.exports = {
       fontcolor2: '#f05356',
       fontcolor3: '#7c7578',
       'fontcolor-white': '#ffffff',
-      transparent: '#fafafa9',
-    },
+      transparent: '#fafafa9'
+    }
   },
-  plugins: [],
-};
+  plugins: []
+}

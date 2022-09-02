@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client'
+import type { Hobby, User } from '@prisma/client'
 
 export enum AuthStrategy {
   STANDARD = 'standard',
@@ -29,3 +29,5 @@ export interface UserAuth {
   user: User
   token: string
 }
+
+export type HobbiesRecord = Record<string, Hobby>
