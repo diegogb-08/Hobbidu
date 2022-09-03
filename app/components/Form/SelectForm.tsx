@@ -14,7 +14,7 @@ const SelectForm: FC<Props> = ({ isError, text, helperText, className, options, 
         {text}
       </label>
       <select
-        className={`form-control
+        className={`
       block
       w-full
       px-2

@@ -111,7 +111,7 @@ const Schedule = () => {
             <TextField text='Date and time' name='dateTime' type='datetime-local' required />
           </div>
           <div className='flex flex-initial flex-col ml-4'>
-            <SelectForm text='Max. joiners' options={paxOptions} />
+            <SelectForm text='Max. participants' name='paxNumber' options={paxOptions} />
           </div>
         </div>
         <label>Location</label>
@@ -129,7 +129,18 @@ const Schedule = () => {
           onLoadFailed={(error) => console.error(error)}
           minLengthAutocomplete={2}
         />
-
+        <div className='flex flex-1 flex-col my-4'>
+          <label htmlFor='description'>Description</label>
+          <span className='text-xs'>Try to give as much information as you can so the joiners can get full info!</span>
+          <textarea
+            className='block w-full px-2 py-1.5 text-base font-normal bg-white bg-clip-padding border border-solid border-gray rounded transition ease-in-out
+                    m-0 focus:bg-white focus:border-blue focus:outline-non'
+            cols={30}
+            rows={8}
+            name='description'
+            maxLength={3000}
+          />
+        </div>
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </Form>
     </div>
