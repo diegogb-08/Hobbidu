@@ -663,6 +663,10 @@ video {
   flex: 1 1 0%;
 }
 
+.flex-initial {
+  flex: 0 1 auto;
+}
+
 .flex-row {
   flex-direction: row;
 }

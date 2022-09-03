@@ -4,10 +4,9 @@ interface Props extends HTMLProps<HTMLInputElement> {
   isError?: boolean
   text?: string
   helperText?: string
-  className?: string
 }
 
-const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputProps }: Props) => {
+const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputProps }) => {
   return (
     <div className='w-full'>
       <label htmlFor='floatingInput' className='text-black'>

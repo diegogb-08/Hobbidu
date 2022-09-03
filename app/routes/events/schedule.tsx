@@ -1,7 +1,7 @@
 import { Chip } from '@mui/material'
 import { Form, Link, useLoaderData } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/server-runtime'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
 import { getAllEventsByUserId } from '~/services/events.server'
@@ -9,8 +9,10 @@ import { getAllHobbies } from '~/services/hobbies.server'
 import { getSession } from '~/services/session.server'
 import type { UserAuth } from '~/types/types'
 import type { EventsLoader } from './index'
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete'
+import GooglePlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete'
 import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
+import type { Location } from '@prisma/client'
+import SelectForm from '~/components/Form/SelectForm'
 
 interface ScheduleLoader extends EventsLoader {
   googleApiKey: string | undefined
@@ -33,16 +35,52 @@ export const loader: LoaderFunction = async ({ request }): Promise<ScheduleLoade
   return userAuth
 }
 
+interface Terms {
+  offset: number
+  value: string
+}
+
+interface LocationValue {
+  label: string
+  value: {
+    description: string
+    referend: string
+    tructured_formatting: {
+      main_text: string
+      secondary_text: string
+    }
+    terms: Terms[]
+    types: string[]
+  }
+}
+
+const paxOptions = Array.from({ length: 10 }, (_v, i) => 1 + i).splice(1)
+
 const Schedule = () => {
   const scheduleId = useId()
   const { hobbies, user, googleApiKey } = useLoaderData<ScheduleLoader | undefined>()
-  const [value, setValue] = useState<string | null>(null)
+  const [locationValue, setLocationValue] = useState<LocationValue | undefined>()
+  const [location, setLocation] = useState<Location | undefined>()
 
   const [selectedHobbyId, setSelectedHobbyId] = useState<string | undefined>()
 
   const handleSelectHobby = (hobbyId: string) => {
     setSelectedHobbyId(hobbyId)
   }
+
+  useEffect(() => {
+    if (locationValue?.label) {
+      geocodeByAddress(locationValue?.label)
+        .then((results) => getLatLng(results[0]))
+        .then(({ lat, lng }) => {
+          setLocation({
+            name: locationValue.label,
+            coordinates: [lng, lat],
+            type: 'Point'
+          })
+        })
+    }
+  }, [locationValue?.label, location /* This location is here just for the commit. It needs to be removed */])
 
   return (
     <div className='flex justify-center mt-4'>
@@ -68,7 +106,14 @@ const Schedule = () => {
             )
           })}
         </h3>
-        <TextField text='Date and time' name='dateTime' type='datetime-local' required />
+        <div className='flex flex-1'>
+          <div className='flex flex-initial'>
+            <TextField text='Date and time' name='dateTime' type='datetime-local' required />
+          </div>
+          <div className='flex flex-initial flex-col ml-4'>
+            <SelectForm text='Max. joiners' options={paxOptions} />
+          </div>
+        </div>
         <label>Location</label>
         <GooglePlacesAutocomplete
           apiKey={googleApiKey}
@@ -78,12 +123,13 @@ const Schedule = () => {
             region: 'es'
           }}
           selectProps={{
-            value,
-            onChange: setValue
+            value: locationValue,
+            onChange: setLocationValue
           }}
           onLoadFailed={(error) => console.error(error)}
           minLengthAutocomplete={2}
         />
+
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </Form>
     </div>
