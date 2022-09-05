@@ -84,7 +84,7 @@ const Schedule = () => {
 
   return (
     <div className='flex justify-center mt-4'>
-      <Form method='post' className='flex-1 border border-gray rounded p-6'>
+      <Form method='post' className='flex-1 border border-gray rounded p-6 bg-white'>
         <Link to='/events' className='hover:underline text-fontcolor1 hover:text-fontcolor2'>
           Go Back
         </Link>
