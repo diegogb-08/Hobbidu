@@ -1,6 +1,7 @@
 import { Chip } from '@mui/material'
-import { Form, Link, useLoaderData } from '@remix-run/react'
-import type { LoaderFunction } from '@remix-run/server-runtime'
+import { Form, Link, useFetcher, useLoaderData } from '@remix-run/react'
+import type { ActionFunction, LoaderFunction } from '@remix-run/server-runtime'
+import { json } from '@remix-run/server-runtime'
 import { useEffect, useId, useState } from 'react'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
@@ -13,6 +14,23 @@ import GooglePlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-goo
 import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
 import type { Location } from '@prisma/client'
 import SelectForm from '~/components/Form/SelectForm'
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData()
+  const location = JSON.parse(formData.get('location') as string)
+  const title = formData.get('title')
+  const paxNumber = formData.get('paxNumber')
+  const description = formData.get('description')
+  const selectedHobbyId = formData.get('selectedHobbyId')
+
+  return json({
+    location,
+    title,
+    paxNumber,
+    description,
+    selectedHobbyId
+  })
+}
 
 interface ScheduleLoader extends EventsLoader {
   googleApiKey: string | undefined
@@ -61,11 +79,16 @@ const Schedule = () => {
   const { hobbies, user, googleApiKey } = useLoaderData<ScheduleLoader | undefined>()
   const [locationValue, setLocationValue] = useState<LocationValue | undefined>()
   const [location, setLocation] = useState<Location | undefined>()
-
+  const fetcher = useFetcher()
   const [selectedHobbyId, setSelectedHobbyId] = useState<string | undefined>()
 
   const handleSelectHobby = (hobbyId: string) => {
     setSelectedHobbyId(hobbyId)
+  }
+
+  const handleSubmit = () => {
+    const parsedLocation = JSON.stringify(location)
+    fetcher.submit({ location: parsedLocation }, { method: 'post' })
   }
 
   useEffect(() => {
@@ -80,11 +103,11 @@ const Schedule = () => {
           })
         })
     }
-  }, [locationValue?.label, location /* This location is here just for the commit. It needs to be removed */])
+  }, [locationValue?.label])
 
   return (
     <div className='flex justify-center mt-4'>
-      <Form method='post' className='flex-1 border border-gray rounded p-6 bg-white'>
+      <Form method='post' className='flex-1 border border-gray rounded p-6 bg-white' onSubmit={handleSubmit}>
         <Link to='/events' className='hover:underline text-fontcolor1 hover:text-fontcolor2'>
           Go Back
         </Link>
@@ -118,11 +141,12 @@ const Schedule = () => {
         <GooglePlacesAutocomplete
           apiKey={googleApiKey}
           apiOptions={{
-            id: scheduleId,
             language: 'en',
             region: 'es'
           }}
           selectProps={{
+            id: scheduleId,
+            instanceId: scheduleId,
             value: locationValue,
             onChange: setLocationValue
           }}
