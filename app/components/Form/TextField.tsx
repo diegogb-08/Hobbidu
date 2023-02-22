@@ -1,18 +1,29 @@
-import type { FC, HTMLProps } from 'react'
+import type { FC, HTMLInputTypeAttribute } from 'react'
+import { useField } from 'remix-validated-form'
 
-interface Props extends HTMLProps<HTMLInputElement> {
-  isError?: boolean
+interface Props {
+  name: string
+  className?: string
   text?: string
-  helperText?: string
+  placeholder?: string
+  type?: HTMLInputTypeAttribute
 }
 
-const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputProps }) => {
+const TextField: FC<Props> = ({ name, text, className, placeholder, type }) => {
+  const { getInputProps, error } = useField(name, {
+    validationBehavior: {
+      initial: 'onSubmit',
+      whenSubmitted: 'onChange'
+    }
+  })
+  console.log(error)
   return (
     <div className='w-full'>
-      <label htmlFor='floatingInput' className='text-black'>
+      <label htmlFor={name} className='text-black'>
         {text}
       </label>
       <input
+        type={type}
         className={`
         block
         w-full
@@ -22,15 +33,16 @@ const TextField: FC<Props> = ({ isError, text, helperText, className, ...inputPr
         font-normal
         bg-white bg-clip-padding
         border border-solid
-        ${isError ? 'border-red' : 'border-gray'}
+        ${error ? 'border-red' : 'border-gray'}
         rounded
         transition
         ease-in-out
         m-0 focus:bg-white focus:border-blue focus:outline-non ${className}`}
-        {...inputProps}
+        placeholder={placeholder}
+        {...getInputProps}
       />
       <div className='h-4 w-full flex items-start pl-2'>
-        {helperText && <span className={`text-xs ${isError ? 'text-red' : 'text-gray'}`}>{helperText}</span>}
+        {!!error && <span className='text-xs text-red'>{error}</span>}
       </div>
     </div>
   )

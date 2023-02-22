@@ -24,6 +24,8 @@ export const LoginSchema = z.object({
 })
 
 export const CreateUserSchema = LoginSchema.extend({
+  email: z.string().email(),
+  password: z.string().min(6),
   name: z.string().min(1),
   user_name: z.string().min(5).max(16)
 })

@@ -112,7 +112,7 @@ const Schedule = () => {
           Go Back
         </Link>
         <h2 className='text-xl text-center font-bold text-fontcolor1'>Create an Event 🗓️</h2>
-        <TextField text='Title' name='title' required />
+        <TextField text='Title' name='title' />
         <label>Select 1 of your hobbies below:</label>
         <h3 className='flex flex-wrap justify-center'>
           {user.hobbies.map((hobbyId) => {
@@ -131,7 +131,7 @@ const Schedule = () => {
         </h3>
         <div className='flex flex-1'>
           <div className='flex flex-initial'>
-            <TextField text='Date and time' name='dateTime' type='datetime-local' required />
+            <TextField text='Date and time' name='dateTime' type='datetime-local' />
           </div>
           <div className='flex flex-initial flex-col ml-4'>
             <SelectForm text='Max. participants' name='paxNumber' options={paxOptions} />

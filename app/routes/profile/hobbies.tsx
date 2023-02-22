@@ -1,6 +1,7 @@
 import { Chip } from '@mui/material'
 import type { Hobby } from '@prisma/client'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, useActionData, useLoaderData, useMatches, useTransition } from '@remix-run/react'
@@ -123,16 +124,7 @@ const Hobbies = () => {
       </div>
       <h3 className='text-lg font-bold pt-6 pb-6'>You can't find your hobby? Add it yourself below</h3>
       <Form method='post' className='flex w-full justify-center'>
-        <TextField
-          name='hobby'
-          type='text'
-          maxLength={25}
-          placeholder='Add your missing hobby here. e.g. CLIMBING'
-          pattern='(^[A-Za-z\s]{3,25})'
-          isError={!!actionData?.errors}
-          defaultValue={actionData?.hobby as string}
-          helperText={actionData?.errors}
-        />
+        <TextField name='hobby' type='text' placeholder='Add your missing hobby here. e.g. CLIMBING' />
         <button
           type='submit'
           className='ml-4 h-[38px] w-40 p-4 text-center flex justify-center items-center bg-transparent font-semibold hover:text-fontcolor-white py-2 px-4 border hover:border-transparent rounded hover:bg-primary text-label'
