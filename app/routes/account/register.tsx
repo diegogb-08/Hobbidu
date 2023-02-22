@@ -1,36 +1,38 @@
 import { Form, useActionData, useTransition } from '@remix-run/react'
-import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import type { DataFunctionArgs, LoaderFunction } from '@remix-run/node'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-import { register, validate } from '~/services/user.server'
+import { CreateUserSchema, register } from '~/services/user.server'
 import AuthContainer from '~/components/Layouts/AuthContainer'
 import GoogleButton from '~/components/Buttons/GoogleButton'
 import { authenticator } from '~/services/auth.server'
-import type { Validation } from '~/types/types'
 import { AuthStrategy } from '~/types/types'
 import { SocialsProvider } from 'remix-auth-socials'
+import { getFormData } from 'remix-params-helper'
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: DataFunctionArgs) => {
   const clonedRequest = new Request(request)
+  const result = await getFormData(request, CreateUserSchema)
   const formData = await clonedRequest.formData()
+  const values = Object.fromEntries(formData)
+  if (!result.success) {
+    return { values, errors: result.errors }
+  }
+
   try {
-    const response = await register(formData)
+    const response = await register(result.data)
     if (response) {
-      return await authenticator.authenticate(AuthStrategy.STANDARD, request, {
+      await authenticator.authenticate(AuthStrategy.STANDARD, request, {
         successRedirect: 'profile/hobbies',
         failureRedirect: '/account/login',
         throwOnError: true
       })
+      return { values, errors: {} }
     }
-    return response
+    return { values, errors: {} }
   } catch (error) {
-    if (error instanceof Error) {
-      const message = error.message
-      return validate(message, formData)
-    }
     console.error({ error })
-    // eslint-disable-next-line unicorn/no-null
-    return null
+    return { values, errors: {} }
   }
 }
 
@@ -41,7 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 const Register = () => {
-  const actionData = useActionData<Validation>()
+  const actionData = useActionData<typeof action>()
   const transition = useTransition()
   const isSubmitting = transition.state === 'submitting'
   return (
@@ -54,10 +56,10 @@ const Register = () => {
           placeholder='Diego Garcia Brisa'
           type='text'
           name='name'
-          defaultValue={actionData?.values?.name as string}
+          defaultValue={actionData?.values.name}
           isError={!!actionData?.errors?.name}
           helperText={actionData?.errors.emptyFields ? actionData?.errors?.name : 'First Name and Last Name'}
-          pattern='(^[A-Za-z]{3,16})([ ]{0,1})([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})?([ ]{0,1})?([A-Za-z]{3,16})'
+          pattern='(^[A-Za-z]{3, 16})([ ]{0, 1})([A-Za-z]{3, 16})?([ ]{0, 1})?([A-Za-z]{3, 16})?([ ]{0, 1})?([A-Za-z]{3, 16})'
           title='Please add First Name and Last Name'
         />
         <TextField

@@ -4,9 +4,10 @@ import { SECRET } from './constants'
 import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
 import { AuthorizationError } from 'remix-auth'
-import type { TypedResponse } from '@remix-run/server-runtime'
-import type { UserAuth, Validation } from '~/types/types'
+import type { Validation } from '~/types/types'
 import type { User } from '@prisma/client'
+import { getParams } from 'remix-params-helper'
+import { z } from 'zod'
 
 export enum SessionErrorKey {
   EmptyFields = 'empty_fields',
@@ -17,59 +18,57 @@ export enum SessionErrorKey {
   UniqueFieldsRequired = 'unique_fields_required'
 }
 
-export const login = async (formData: FormData): Promise<UserAuth> => {
-  const email = formData.get('email')
-  const password = formData.get('password')
+export const LoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6)
+})
 
-  if (!email || !password) {
-    throw new AuthorizationError(SessionErrorKey.EmptyFields)
+export const CreateUserSchema = LoginSchema.extend({
+  name: z.string().min(1),
+  user_name: z.string().min(5).max(16)
+})
+
+export const login = async (formData: FormData) => {
+  const result = getParams(formData, LoginSchema)
+
+  if (!result.success) {
+    console.error(result.errors)
+    throw result.errors
   }
 
   if (!SECRET) {
     throw new AuthorizationError(SessionErrorKey.MissingSecret)
   }
+  const { email, password } = result.data
 
-  if (typeof email === 'string' && typeof password === 'string') {
+  try {
     const user = await db.user.findUnique({
       where: {
         email
       }
     })
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new AuthorizationError(SessionErrorKey.IncorrectDetails)
-    }
-    const payload = {
-      user,
-      tokenCreationDate: new Date()
-    }
+    if (user) {
+      if (!(await bcrypt.compare(password, user.password))) {
+        throw new AuthorizationError(SessionErrorKey.IncorrectDetails)
+      }
+      const payload = {
+        user,
+        tokenCreationDate: new Date()
+      }
 
-    const token = jwt.sign(payload, SECRET, {
-      expiresIn: '1w'
-    })
-    return { user, token }
+      const token = jwt.sign(payload, SECRET, {
+        expiresIn: '1w'
+      })
+      return { user, token }
+    }
+  } catch {
+    throw new AuthorizationError(SessionErrorKey.IncorrectDetails)
   }
-  throw new AuthorizationError(SessionErrorKey.WrongFieldType)
 }
 
-export const register = async (formData: FormData): Promise<User> => {
-  const name = formData.get('name')
-  const user_name = formData.get('user_name')
-  const email = formData.get('email')
-  const password = formData.get('password')
+type NewUser = z.infer<typeof CreateUserSchema>
 
-  if (!name || !user_name || !email || !password) {
-    throw new Error(SessionErrorKey.EmptyFields)
-  }
-
-  if (
-    typeof name !== 'string' ||
-    typeof user_name !== 'string' ||
-    typeof email !== 'string' ||
-    typeof password !== 'string'
-  ) {
-    throw new TypeError(SessionErrorKey.WrongFieldType)
-  }
-
+export const register = async ({ email, name, user_name, password }: NewUser): Promise<User> => {
   try {
     const hashedPassword = await bcrypt.hash(password, 10)
     return await db.user.create({
@@ -80,10 +79,7 @@ export const register = async (formData: FormData): Promise<User> => {
   }
 }
 
-export const validate = (
-  error: string | SessionErrorKey | undefined,
-  formData?: FormData
-): TypedResponse<Validation> | null => {
+export const validate = (error: string | SessionErrorKey | undefined, formData?: FormData) => {
   const formValues = {
     name: formData ? formData?.get('name') : undefined,
     user_name: formData ? formData?.get('user_name') : undefined,
@@ -128,7 +124,6 @@ export const validate = (
       throw new Error('Fields should be a string')
 
     default:
-      // eslint-disable-next-line unicorn/no-null
       return null
   }
 }

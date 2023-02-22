@@ -8,10 +8,9 @@ import { db } from '~/utils/db.server'
 import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CALLBACK_URL } from './constants'
 import invariant from 'tiny-invariant'
 import { login } from './user.server'
-import type { UserAuth } from '~/types/types'
 import { AuthStrategy } from '~/types/types'
 
-export const authenticator = new Authenticator<UserAuth>(sessionStorage, {
+export const authenticator = new Authenticator(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
   sessionKey: 'sessionKey',
   throwOnError: true
@@ -23,8 +22,8 @@ invariant(CALLBACK_URL, 'Missing Google redirect uri.')
 
 authenticator
   .use(
-    new FormStrategy(async ({ form: formData }) => {
-      return await login(formData)
+    new FormStrategy(async ({ form }) => {
+      return await login(form)
     }),
     AuthStrategy.STANDARD
   )
