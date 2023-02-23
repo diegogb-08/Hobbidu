@@ -1,9 +1,7 @@
 import { db } from '~/utils/db.server'
-import { json } from '@remix-run/node'
 import { SECRET } from './constants'
 import bcrypt from 'bcryptjs'
 import * as jwt from 'jsonwebtoken'
-import type { Errors } from '~/types/types'
 import { getParams } from 'remix-params-helper'
 import { z } from 'zod'
 import invariant from 'tiny-invariant'
@@ -70,30 +68,20 @@ export const login = async (formData: FormData) => {
   throw new Error('User not found')
 }
 
-export const register = async ({ email, user_name, password }: NewUser) => {
-  const hashedPassword = await bcrypt.hash(password, 10)
-  return await db.user.create({
-    data: { user_name, email, password: hashedPassword }
-  })
-}
-
-export const validate = (error: SessionErrorKey) => {
-  console.log(error)
-  switch (error) {
-    case SessionErrorKey.IncorrectDetails:
-      return json<{ error: Errors }>({
-        error: {
-          message: 'The Email or Password does not exist or is incorrect',
-          email: 'Email does not exist',
-          password: 'Password is incorrect'
-        }
-      })
-    case SessionErrorKey.MissingSecret:
-      throw new Error('Secret is missing')
-    case SessionErrorKey.WrongFieldType:
-      throw new Error('Fields should be a string')
-
-    default:
-      return error
+export const isUserRegistered = async ({ email, user_name, password }: NewUser) => {
+  let isRegistered = false
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const user = await db.user.create({
+      data: { user_name, email, password: hashedPassword }
+    })
+    if (user) {
+      isRegistered = true
+      return isRegistered
+    }
+    return isRegistered
+  } catch (error) {
+    console.error({ error })
+    return isRegistered
   }
 }

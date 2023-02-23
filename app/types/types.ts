@@ -12,15 +12,6 @@ export interface FormValues {
   password?: FormDataEntryValue | null
 }
 
-export interface Errors {
-  message?: string
-  emptyFields?: boolean
-  name?: string
-  user_name?: string
-  email?: string
-  password?: string
-}
-
 export interface UserAuth {
   user: User
   token: string
