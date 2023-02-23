@@ -13,18 +13,18 @@ import { z } from 'zod'
 import { zfd } from 'zod-form-data'
 import { isUserValidated } from '~/services/user.server'
 
-const BaseSchema = z.object({
+const LoginSchema = z.object({
   email: zfd.text(z.string().min(1, { message: 'Email is required' }).email('Must be a valid email')),
   password: zfd.text(z.string().min(6, { message: 'Password must be a minimum of 6 characters' })),
   validatedUser: z.boolean().optional()
 })
 
-const clientValidator = withZod(BaseSchema)
+const clientValidator = withZod(LoginSchema)
 
 export const action = async ({ request }: DataFunctionArgs) => {
   const clonedRequest = new Request(request)
   const serverValidator = withZod(
-    BaseSchema.refine(
+    LoginSchema.refine(
       async ({ email, password }) => {
         return await isUserValidated(email, password)
       },

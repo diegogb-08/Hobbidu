@@ -16,7 +16,6 @@ const TextField: FC<Props> = ({ name, text, className, placeholder, type }) => {
       whenSubmitted: 'onChange'
     }
   })
-  console.log(error)
   return (
     <div className='w-full'>
       <label htmlFor={name} className='text-black'>

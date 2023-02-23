@@ -82,7 +82,7 @@ model User {
   email         String         @unique(map: "email_1")
   hobbies       String[]
   location      Location?
-  name          String
+  name          String?
   password      String
   phone_number  String?
   profile_img   String?

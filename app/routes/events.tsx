@@ -1,10 +1,10 @@
 import { Outlet, useLoaderData } from '@remix-run/react'
-import type { LoaderFunction } from '@remix-run/server-runtime'
+import type { DataFunctionArgs } from '@remix-run/server-runtime'
 import AppContainer from '~/components/Layouts/AppContainer'
 import { authenticator } from '~/services/auth.server'
 import type { UserAuth } from '~/types/types'
 
-export const loader: LoaderFunction = async ({ request }): Promise<UserAuth | null> => {
+export const loader = async ({ request }: DataFunctionArgs) => {
   return await authenticator.isAuthenticated(request, {
     failureRedirect: '/account/login'
   })

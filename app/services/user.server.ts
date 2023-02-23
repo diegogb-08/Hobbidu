@@ -7,6 +7,7 @@ import type { Errors } from '~/types/types'
 import { getParams } from 'remix-params-helper'
 import { z } from 'zod'
 import invariant from 'tiny-invariant'
+import type { NewUser } from '~/routes/account/register'
 
 export enum SessionErrorKey {
   WrongFieldType = 'wrong_field_type',
@@ -17,13 +18,6 @@ export enum SessionErrorKey {
 export const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6)
-})
-
-export const CreateUserSchema = LoginSchema.extend({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1),
-  user_name: z.string().min(5).max(16)
 })
 
 export const isUserValidated = async (email: string, password: string) => {
@@ -76,17 +70,11 @@ export const login = async (formData: FormData) => {
   throw new Error('User not found')
 }
 
-type NewUser = z.infer<typeof CreateUserSchema>
-
-export const register = async ({ email, name, user_name, password }: NewUser) => {
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10)
-    return await db.user.create({
-      data: { name, user_name, email, password: hashedPassword }
-    })
-  } catch (error) {
-    console.error(error)
-  }
+export const register = async ({ email, user_name, password }: NewUser) => {
+  const hashedPassword = await bcrypt.hash(password, 10)
+  return await db.user.create({
+    data: { user_name, email, password: hashedPassword }
+  })
 }
 
 export const validate = (error: SessionErrorKey) => {
