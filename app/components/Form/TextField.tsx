@@ -23,6 +23,7 @@ const TextField: FC<Props> = ({ name, text, className, placeholder, type }) => {
         {text}
       </label>
       <input
+        name={name}
         type={type}
         className={`
         block

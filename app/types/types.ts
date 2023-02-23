@@ -21,10 +21,6 @@ export interface Errors {
   password?: string
 }
 
-export interface Validation {
-  errors: Errors
-  values?: FormValues
-}
 export interface UserAuth {
   user: User
   token: string
