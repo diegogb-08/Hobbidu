@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Chip } from '@mui/material'
 import { useLoaderData } from '@remix-run/react'
-import type { LoaderFunction } from '@remix-run/server-runtime'
+import type { DataFunctionArgs } from '@remix-run/server-runtime'
 import LinkButton from '~/components/Buttons/LinkButton'
 import AddIcon from '~/icons/AddIcon'
 import { getAllHobbies } from '~/services/hobbies.server'
@@ -10,12 +10,12 @@ import { getAllEventsByUserId } from '~/services/events.server'
 import type { Event } from '@prisma/client'
 import { getSession } from '~/services/session.server'
 
-export interface EventsLoader extends UserAuth {
+export type EventsLoader = {
   hobbies: HobbiesRecord
   events: Event[]
-}
+} & UserAuth
 
-export const loader: LoaderFunction = async ({ request }): Promise<EventsLoader | undefined> => {
+export const loader = async ({ request }: DataFunctionArgs) => {
   const session = await getSession(request.headers.get('Cookie'))
   const userAuth = (await session.get('sessionKey')) as UserAuth | undefined
 
@@ -32,7 +32,7 @@ export const loader: LoaderFunction = async ({ request }): Promise<EventsLoader 
 }
 
 const Index = () => {
-  const eventData = useLoaderData<EventsLoader | undefined>()
+  const eventData = useLoaderData<typeof loader>()
   const [isHovered, setIsHovered] = useState(false)
   const ref = useRef<HTMLAnchorElement>(null)
 
@@ -57,7 +57,7 @@ const Index = () => {
         <div className='flex flex-col lg:inline-block border border-gray rounded p-6'>
           <span className='font-bold text-lg'>This are the hobbies you can create events</span>
           <div className='flex flex-wrap justify-center mt-4'>
-            {eventData?.user?.hobbies.map((hobbyId) => {
+            {eventData?.user?.hobbyIDs.map((hobbyId) => {
               const hobby = eventData.hobbies[hobbyId]
               return (
                 <Chip

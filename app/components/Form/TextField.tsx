@@ -19,6 +19,7 @@ const TextField = forwardRef(
         whenSubmitted: 'onChange'
       }
     })
+
     return (
       <div className='w-full'>
         <label htmlFor={name} className='text-black'>
@@ -44,7 +45,7 @@ const TextField = forwardRef(
         ease-in-out
         m-0 focus:bg-white focus:border-blue focus:outline-non ${className}`}
           placeholder={placeholder}
-          {...getInputProps}
+          {...getInputProps()}
         />
         <div className='h-4 w-full flex items-start pl-2'>
           {!!error && <span className='text-xs text-red'>{error}</span>}

@@ -1,13 +1,21 @@
-import type { FC, HTMLProps } from 'react'
+import type { FC } from 'react'
+import { useField } from 'remix-validated-form'
 
-interface Props extends HTMLProps<HTMLSelectElement> {
-  isError?: boolean
+interface Props {
+  name: string
+  className?: string
   text?: string
-  helperText?: string
   options: string[] | number[]
+  defaultValue?: string | number
 }
 
-const SelectForm: FC<Props> = ({ isError, text, helperText, className, options, ...inputProps }) => {
+const SelectForm: FC<Props> = ({ name, text, className, options, defaultValue }) => {
+  const { getInputProps, error } = useField(name, {
+    validationBehavior: {
+      initial: 'onSubmit',
+      whenSubmitted: 'onChange'
+    }
+  })
   return (
     <div className='w-full'>
       <label htmlFor='floatingInput' className='text-black'>
@@ -27,13 +35,13 @@ const SelectForm: FC<Props> = ({ isError, text, helperText, className, options, 
       transition
       ease-in-out
       m-0 focus:bg-white focus:border-blue focus:outline-non
-      ${isError ? 'border-red' : 'border-gray'}
+      ${error ? 'border-red' : 'border-gray'}
       ${className}
       `}
         id='maxJoiners'
         name='maxJoiners'
-        defaultValue={2}
-        {...inputProps}
+        defaultValue={defaultValue}
+        {...getInputProps()}
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -42,7 +50,7 @@ const SelectForm: FC<Props> = ({ isError, text, helperText, className, options, 
         ))}
       </select>
       <div className='h-4 w-full flex items-start pl-2'>
-        {helperText && <span className={`text-xs ${isError ? 'text-red' : 'text-gray'}`}>{helperText}</span>}
+        {error && <span className={`text-xs text-red`}>{error}</span>}
       </div>
     </div>
   )
