@@ -37,7 +37,7 @@ const Schema: z.ZodType<Prisma.UserScalarWhereWithAggregatesInput> = z
     createdAt: z.union([z.lazy(() => DateTimeWithAggregatesFilterObjectSchema), z.date()]).optional(),
     updatedAt: z.union([z.lazy(() => DateTimeWithAggregatesFilterObjectSchema), z.date()]).optional(),
     email: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
-    hobbies: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
+    hobbyIDs: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
     name: z
       .union([z.lazy(() => StringNullableWithAggregatesFilterObjectSchema), z.string()])
       .optional()

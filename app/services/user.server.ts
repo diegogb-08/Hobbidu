@@ -6,6 +6,7 @@ import { getParams } from 'remix-params-helper'
 import { z } from 'zod'
 import invariant from 'tiny-invariant'
 import type { NewUser } from '~/routes/account/register'
+import { UserSchema } from '~/types/types'
 
 export enum SessionErrorKey {
   WrongFieldType = 'wrong_field_type',
@@ -63,7 +64,8 @@ export const login = async (formData: FormData) => {
     const token = jwt.sign(payload, SECRET, {
       expiresIn: '1w'
     })
-    return { user, token }
+    const parsedUser = UserSchema.parse(user)
+    return { user: parsedUser, token }
   }
   throw new Error('User not found')
 }
@@ -73,7 +75,12 @@ export const isUserRegistered = async ({ email, user_name, password }: NewUser) 
   try {
     const hashedPassword = await bcrypt.hash(password, 10)
     const user = await db.user.create({
-      data: { user_name, email, password: hashedPassword }
+      data: {
+        user_name,
+        email,
+        password: hashedPassword,
+        hobbyIDs: []
+      }
     })
     if (user) {
       isRegistered = true

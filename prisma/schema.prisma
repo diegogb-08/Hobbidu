@@ -22,73 +22,75 @@ type Location {
 }
 
 model Comment {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  content       String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  event_id      String?  @db.ObjectId
-  post_id       String?  @db.ObjectId
-  user_id       String   @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  event_id  String?  @db.ObjectId
+  post_id   String?  @db.ObjectId
+  user_id   String   @db.ObjectId
 }
 
 model Event {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  description   String
-  event_date    DateTime       @db.Date
-  hobby_id      String         @db.ObjectId
-  joiners       String[]
-  location      Location
-  maxJoiners    Int
-  seats         String
-  title         String
-  user_id       String         @db.ObjectId
-  vehicle       Boolean
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String
+  event_date  DateTime @db.Date
+  hobby_id    String   @db.ObjectId
+  joiners     String[]
+  location    Location
+  maxJoiners  Int
+  seats       String
+  title       String
+  user_id     String   @db.ObjectId
+  vehicle     Boolean
 
   @@index([location], map: "location_2dsphere")
 }
 
 model Follower {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  follower_id   String    @db.ObjectId
-  user_id       String    @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  follower_id String   @db.ObjectId
+  user_id     String   @db.ObjectId
 }
 
 model Hobby {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  name          String    @unique(map: "name_1")
-  user_id       String    @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String   @unique(map: "name_1")
+  user      User[]   @relation(fields: [userIDs], references: [id])
+  userIDs   String[] @db.ObjectId
 }
 
 model Post {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  description   String
-  hobby_id      String        @db.ObjectId
-  image         String
-  like          String[]
-  location      Location
-  user_id       String        @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String
+  hobby_id    String   @db.ObjectId
+  image       String
+  like        String[]
+  location    Location
+  user_id     String   @db.ObjectId
 }
 
 model User {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  bio           String?
-  birth_date    DateTime?      @db.Date
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  email         String         @unique(map: "email_1")
-  hobbies       String[]
-  location      Location?
-  name          String?
-  password      String
-  phone_number  String?
-  profile_img   String?
-  user_name     String         @unique(map: "user_name_1")
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  bio          String?
+  birth_date   DateTime? @db.Date
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  email        String    @unique(map: "email_1")
+  hobbies      Hobby[]   @relation(fields: [hobbyIDs], references: [id])
+  hobbyIDs     String[]  @db.ObjectId
+  location     Location?
+  name         String?
+  password     String
+  phone_number String?
+  profile_img  String?
+  user_name    String    @unique(map: "user_name_1")
 }

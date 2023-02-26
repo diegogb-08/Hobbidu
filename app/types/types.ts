@@ -1,4 +1,5 @@
-import type { Hobby } from '@prisma/client'
+import type { Hobby, Location } from '@prisma/client'
+import { LocationTypeSchema } from 'prisma/generated/schemas'
 import { z } from 'zod'
 
 export enum AuthStrategy {
@@ -13,25 +14,22 @@ export interface FormValues {
   password?: FormDataEntryValue | null
 }
 
-const LocationSchema = z
-  .object({
-    coordinates: z.tuple([z.number(), z.number()]),
-    name: z.string(),
-    type: z.object({
-      Point: z.literal('Point')
-    })
-  })
-  .nullable()
+const LocationSchema: z.ZodType<Location> = z.object({
+  coordinates: z.tuple([z.number(), z.number()]),
+  name: z.string(),
+  type: LocationTypeSchema
+})
 
 export const UserSchema = z.object({
   id: z.string(),
   bio: z.string().nullable(),
   birth_date: z.date().nullable(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
   email: z.string(),
-  hobbies: z.array(z.string()),
-  location: LocationSchema,
+  hobbies: z.array(z.string()).optional(),
+  hobbyIDs: z.array(z.string()),
+  location: LocationSchema.nullable(),
   name: z.string().nullable(),
   password: z.string(),
   phone_number: z.string().nullable(),
@@ -39,11 +37,14 @@ export const UserSchema = z.object({
   user_name: z.string()
 })
 
-export const UserAuthSchema = z.object({
-  user: UserSchema,
-  token: z.string()
-})
+export const UserAuthSchema = z
+  .object({
+    user: UserSchema,
+    token: z.string()
+  })
+  .nullable()
 
 export type UserAuth = z.infer<typeof UserAuthSchema>
+export type ZodUser = z.infer<typeof UserSchema>
 
 export type HobbiesRecord = Record<string, Hobby>

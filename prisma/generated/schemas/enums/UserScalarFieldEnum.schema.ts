@@ -7,7 +7,7 @@ export const UserScalarFieldEnumSchema = z.enum([
   'createdAt',
   'updatedAt',
   'email',
-  'hobbies',
+  'hobbyIDs',
   'name',
   'password',
   'phone_number',

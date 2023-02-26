@@ -9,7 +9,7 @@ const Schema: z.ZodType<Prisma.HobbyCountOrderByAggregateInput> = z
     createdAt: z.lazy(() => SortOrderSchema).optional(),
     updatedAt: z.lazy(() => SortOrderSchema).optional(),
     name: z.lazy(() => SortOrderSchema).optional(),
-    user_id: z.lazy(() => SortOrderSchema).optional()
+    userIDs: z.lazy(() => SortOrderSchema).optional()
   })
   .strict()
 

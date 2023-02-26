@@ -3,6 +3,7 @@ import { StringFilterObjectSchema } from './StringFilter.schema'
 import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema'
 import { DateTimeNullableFilterObjectSchema } from './DateTimeNullableFilter.schema'
 import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema'
+import { HobbyListRelationFilterObjectSchema } from './HobbyListRelationFilter.schema'
 import { StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema'
 import { LocationNullableCompositeFilterObjectSchema } from './LocationNullableCompositeFilter.schema'
 import { LocationObjectEqualityInputObjectSchema } from './LocationObjectEqualityInput.schema'
@@ -33,7 +34,8 @@ const Schema: z.ZodType<Prisma.UserWhereInput> = z
     createdAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.date()]).optional(),
     updatedAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.date()]).optional(),
     email: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
-    hobbies: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
+    hobbies: z.lazy(() => HobbyListRelationFilterObjectSchema).optional(),
+    hobbyIDs: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
     location: z
       .union([
         z.lazy(() => LocationNullableCompositeFilterObjectSchema),
