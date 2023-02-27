@@ -4,6 +4,7 @@ import Header from './components/Header'
 import { authenticator } from './services/auth.server'
 import styles from './tailwind.css'
 import { UserAuthSchema } from './types/types'
+import '@total-typescript/ts-reset'
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }]
 

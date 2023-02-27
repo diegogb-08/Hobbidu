@@ -9,10 +9,11 @@ interface Props {
   placeholder?: string
   type?: HTMLInputTypeAttribute
   value?: string | number | readonly string[] | undefined
+  defaultValue?: string | number | readonly string[] | undefined
 }
 
 const TextField = forwardRef(
-  ({ name, text, className, placeholder, type, value }: Props, ref: ForwardedRef<HTMLInputElement>) => {
+  ({ name, text, className, placeholder, type, value, defaultValue }: Props, ref: ForwardedRef<HTMLInputElement>) => {
     const { getInputProps, error } = useField(name, {
       validationBehavior: {
         initial: 'onSubmit',
@@ -28,6 +29,7 @@ const TextField = forwardRef(
         <input
           ref={ref}
           value={value}
+          defaultValue={defaultValue}
           name={name}
           type={type}
           className={`

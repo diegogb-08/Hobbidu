@@ -14,7 +14,7 @@ export interface FormValues {
   password?: FormDataEntryValue | null
 }
 
-const LocationSchema: z.ZodType<Location> = z.object({
+export const LocationSchema: z.ZodType<Location> = z.object({
   coordinates: z.tuple([z.number(), z.number()]),
   name: z.string(),
   type: LocationTypeSchema

@@ -6,9 +6,11 @@ import LinkButton from '~/components/Buttons/LinkButton'
 import AddIcon from '~/icons/AddIcon'
 import { getAllHobbies } from '~/services/hobbies.server'
 import type { HobbiesRecord, UserAuth } from '~/types/types'
-import { getAllEventsByUserId } from '~/services/events.server'
+import { UserAuthSchema } from '~/types/types'
+import { getAllEventsByHostId, getAllEventsByUserId } from '~/services/events.server'
 import type { Event } from '@prisma/client'
 import { getSession } from '~/services/session.server'
+import { authenticator } from '~/services/auth.server'
 
 export type EventsLoader = {
   hobbies: HobbiesRecord
@@ -16,23 +18,28 @@ export type EventsLoader = {
 } & UserAuth
 
 export const loader = async ({ request }: DataFunctionArgs) => {
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: '/account/login'
+  })
   const session = await getSession(request.headers.get('Cookie'))
-  const userAuth = (await session.get('sessionKey')) as UserAuth | undefined
+  const userAuth = UserAuthSchema.parse(await session.get('sessionKey'))
 
   if (userAuth) {
     const hobbies = await getAllHobbies()
-    const events = await getAllEventsByUserId(userAuth.user.id)
+    const participatingEvents = await getAllEventsByUserId(userAuth.user.id)
+    const hostingEvents = await getAllEventsByHostId(userAuth.user.id)
     return {
       ...userAuth,
       hobbies,
-      events
+      hostingEvents,
+      participatingEvents
     }
   }
   return userAuth
 }
 
 const Index = () => {
-  const eventData = useLoaderData<typeof loader>()
+  const data = useLoaderData<typeof loader>()
   const [isHovered, setIsHovered] = useState(false)
   const ref = useRef<HTMLAnchorElement>(null)
 
@@ -57,14 +64,15 @@ const Index = () => {
         <div className='flex flex-col lg:inline-block border border-gray rounded p-6'>
           <span className='font-bold text-lg'>This are the hobbies you can create events</span>
           <div className='flex flex-wrap justify-center mt-4'>
-            {eventData?.user?.hobbyIDs.map((hobbyId) => {
-              const hobby = eventData.hobbies[hobbyId]
+            {data?.user?.hobbyIDs.map((hobbyId) => {
+              const hobby = data.hobbies[hobbyId]
               return (
                 <Chip
                   style={{ marginRight: '16px', marginBottom: '16px' }}
                   variant='filled'
                   key={hobby?.id}
                   label={hobby?.name?.toUpperCase()}
+                  color='success'
                 />
               )
             })}
@@ -79,7 +87,11 @@ const Index = () => {
           </div>
         </div>
       </div>
-      <div className='flex w-full'></div>
+      <div className='flex w-full'>
+        {data?.hostingEvents.map((event) => {
+          return <p key={event.id}>{JSON.stringify(event)}</p>
+        })}
+      </div>
     </>
   )
 }

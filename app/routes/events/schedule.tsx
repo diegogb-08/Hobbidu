@@ -14,15 +14,17 @@ import { geocodeByPlaceId, getLatLng } from 'react-google-places-autocomplete'
 import SelectForm from '~/components/Form/SelectForm'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
-import type { ActionFunction, DataFunctionArgs } from '@remix-run/server-runtime'
+import type { DataFunctionArgs } from '@remix-run/server-runtime'
 import type { EventsLoader } from './index'
-// import type { Location } from '@prisma/client'
 import type { UserAuth } from '~/types/types'
+import { LocationSchema } from '~/types/types'
+import type { LocationValue } from '~/components/Form/GooglePlacesAutocomplete'
 import { GooglePlaces } from '~/components/Form/GooglePlacesAutocomplete'
 import type { Location } from '@prisma/client'
 import { db } from '~/utils/db.server'
-import { EventCreateOneSchema } from 'prisma/generated/schemas'
+import { EventCreateInputObjectSchema } from 'prisma/generated/schemas'
 import { getUserAuthFromSession } from '~/services/user.server'
+import invariant from 'tiny-invariant'
 
 const ScheduleSchema = z.object({
   title: z.string().min(1, { message: 'Please add a title for the event' }),
@@ -32,12 +34,13 @@ const ScheduleSchema = z.object({
     .min(1, { message: 'Please, give as much information as you can, so the joiners can get full info!' }),
   selectedHobbyId: z.string().min(1, { message: 'Please select 1 hobby' }),
   dateTime: z.string().min(1, { message: 'Date and time must be entered' }),
-  placeId: z.string().min(1, { message: 'Please select a location' })
+  placeId: z.string().min(1, { message: 'Please select a location' }),
+  location: z.string().optional()
 })
 
 const validator = withZod(ScheduleSchema)
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: DataFunctionArgs) => {
   const userAuth = await getUserAuthFromSession(request)
 
   const { data, error } = await validator.validate(await request.formData())
@@ -45,38 +48,31 @@ export const action: ActionFunction = async ({ request }) => {
     return validationError(error)
   }
 
-  const { title, dateTime, description, paxNumber, placeId, selectedHobbyId } = data
-  let locationName: string = ''
-
-  const location: Location = await geocodeByPlaceId(placeId)
-    .then((results) => {
-      locationName = results[0].formatted_address
-      return getLatLng(results[0])
-    })
-    .then(({ lat, lng }) => {
-      return {
-        name: locationName,
-        coordinates: [lng, lat],
-        type: 'Point'
-      }
-    })
-
-  const event = EventCreateOneSchema.parse({
-    location,
+  const { title, dateTime, description, paxNumber, selectedHobbyId, location } = data
+  invariant(typeof location === 'string', 'Location is not assigned correctly')
+  const parsedLocation = LocationSchema.parse(JSON.parse(location))
+  const event = EventCreateInputObjectSchema.parse({
+    location: parsedLocation,
     title,
-    event_date: dateTime,
+    event_date: new Date(dateTime),
     description,
     maxUsers: paxNumber,
-    hobbyID: selectedHobbyId,
+    hobby: { connect: { id: selectedHobbyId } },
     hostID: userAuth?.user.id,
     userIDs: [userAuth?.user.id],
-    users: [userAuth?.user]
+    users: { connect: { id: userAuth?.user.id } }
   })
-
-  db.event.create({
-    data: event.data
-  })
-  return redirect('/events')
+  try {
+    await db.event.create({
+      data: {
+        ...event
+      }
+    })
+    return redirect('/events')
+  } catch (error) {
+    console.error('ERROR:', { error })
+    return null
+  }
 }
 
 interface ScheduleLoader extends EventsLoader {
@@ -100,25 +96,6 @@ export const loader = async ({ request }: DataFunctionArgs) => {
   return userAuth
 }
 
-// interface Terms {
-//   offset: number
-//   value: string
-// }
-
-// interface LocationValue {
-//   label: string
-//   value: {
-//     description: string
-//     referend: string
-//     tructured_formatting: {
-//       main_text: string
-//       secondary_text: string
-//     }
-//     terms: Terms[]
-//     types: string[]
-//   }
-// }
-
 const paxOptions = Array.from({ length: 10 }, (_v, i) => 1 + i).splice(1)
 
 const Schedule = () => {
@@ -131,35 +108,28 @@ const Schedule = () => {
   })
 
   const { hobbies, user, googleApiKey } = useLoaderData<ScheduleLoader | undefined>()
-  // const [locationValue, setLocationValue] = useState<LocationValue | undefined>()
-  // const [location, setLocation] = useState<Location | undefined>()
-  // const fetcher = useFetcher()
   const [selectedHobbyId, setSelectedHobbyId] = useState<string | undefined>()
-
+  const [location, setLocation] = useState<string | undefined>()
   const handleSelectHobby = (hobbyId: string) => {
     clearError()
     setSelectedHobbyId(hobbyId)
   }
 
-  // const handleSelectLocation = (location: LocationValue) => {
-  //   console.log({ location })
-  //   clearErrorLocation()
-  //   setLocationValue(location)
-  //   geocodeByAddress(location?.label)
-  //     .then((results) => getLatLng(results[0]))
-  //     .then(({ lat, lng }) => {
-  //       setLocation({
-  //         name: location.label,
-  //         coordinates: [lng, lat],
-  //         type: 'Point'
-  //       })
-  //     })
-  // }
-
-  // const handleSubmit = () => {
-  //   const parsedLocation = JSON.stringify(location)
-  //   fetcher.submit({ location: parsedLocation }, { method: 'post' })
-  // }
+  const handleChangeGooglePlaces = async ({ value, label }: LocationValue) => {
+    const location: Location = await geocodeByPlaceId(value.place_id)
+      .then((results) => {
+        return getLatLng(results[0])
+      })
+      .then(({ lat, lng }) => {
+        return {
+          name: label,
+          coordinates: [lng, lat],
+          type: 'Point'
+        }
+      })
+    const stringifiedLocation = JSON.stringify(location)
+    setLocation(stringifiedLocation)
+  }
 
   return (
     <div className='flex justify-center mt-4'>
@@ -202,12 +172,13 @@ const Schedule = () => {
             <SelectForm text='Max. participants' name='paxNumber' options={paxOptions} defaultValue={2} />
           </div>
         </div>
-        <GooglePlaces title='Location' name='placeId' googleApiKey={googleApiKey} />
+        <GooglePlaces title='Location' name='placeId' googleApiKey={googleApiKey} onChange={handleChangeGooglePlaces} />
         <TextArea
           name='description'
           title='Description'
           description='Try to give as much information as you can, so the joiners can get full info!'
         />
+        <TextField name='location' type='hidden' value={location} />
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </ValidatedForm>
     </div>

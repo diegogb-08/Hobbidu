@@ -68,6 +68,7 @@
   "devDependencies": {
     "@remix-run/dev": "^1.13.0",
     "@remix-run/eslint-config": "^1.13.0",
+    "@total-typescript/ts-reset": "^0.3.7",
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.14.0",
