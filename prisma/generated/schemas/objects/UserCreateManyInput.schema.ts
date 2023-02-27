@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { UserCreatehobbyIDsInputObjectSchema } from './UserCreatehobbyIDsInput.schema'
+import { UserCreateeventIDsInputObjectSchema } from './UserCreateeventIDsInput.schema'
 import { LocationNullableCreateEnvelopeInputObjectSchema } from './LocationNullableCreateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 
@@ -14,6 +15,7 @@ const Schema: z.ZodType<Prisma.UserCreateManyInput> = z
     updatedAt: z.date().optional(),
     email: z.string(),
     hobbyIDs: z.union([z.lazy(() => UserCreatehobbyIDsInputObjectSchema), z.string().array()]).optional(),
+    eventIDs: z.union([z.lazy(() => UserCreateeventIDsInputObjectSchema), z.string().array()]).optional(),
     location: z
       .union([
         z.lazy(() => LocationNullableCreateEnvelopeInputObjectSchema),

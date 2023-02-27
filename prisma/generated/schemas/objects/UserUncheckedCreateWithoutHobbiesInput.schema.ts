@@ -1,5 +1,7 @@
 import { z } from 'zod'
 import { UserCreatehobbyIDsInputObjectSchema } from './UserCreatehobbyIDsInput.schema'
+import { EventUncheckedCreateNestedManyWithoutUsersInputObjectSchema } from './EventUncheckedCreateNestedManyWithoutUsersInput.schema'
+import { UserCreateeventIDsInputObjectSchema } from './UserCreateeventIDsInput.schema'
 import { LocationNullableCreateEnvelopeInputObjectSchema } from './LocationNullableCreateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 
@@ -14,6 +16,8 @@ const Schema: z.ZodType<Prisma.UserUncheckedCreateWithoutHobbiesInput> = z
     updatedAt: z.date().optional(),
     email: z.string(),
     hobbyIDs: z.union([z.lazy(() => UserCreatehobbyIDsInputObjectSchema), z.string().array()]).optional(),
+    events: z.lazy(() => EventUncheckedCreateNestedManyWithoutUsersInputObjectSchema).optional(),
+    eventIDs: z.union([z.lazy(() => UserCreateeventIDsInputObjectSchema), z.string().array()]).optional(),
     location: z
       .union([
         z.lazy(() => LocationNullableCreateEnvelopeInputObjectSchema),

@@ -14,7 +14,7 @@ import { authenticator } from '~/services/auth.server'
 import { db } from '~/utils/db.server'
 import SubmitButton from '../../components/Buttons/SubmitButton'
 import { commitSession, getSession } from '~/services/session.server'
-import { UserAuthSchema } from '~/types/types'
+import { getUserAuthFromSession } from '~/services/user.server'
 
 const HobbiesSchema = z.object({
   _action: z.enum(['find', 'update']),
@@ -26,7 +26,7 @@ const validator = withZod(HobbiesSchema)
 
 export const action = async ({ request }: DataFunctionArgs) => {
   const session = await getSession(request.headers.get('Cookie'))
-  const userAuth = UserAuthSchema.parse(await session.get('sessionKey'))
+  const userAuth = await getUserAuthFromSession(request)
   const hobbies = await db.hobby.findMany()
   const result = await getFormData(request, HobbiesSchema)
   let hobbyName: string | undefined

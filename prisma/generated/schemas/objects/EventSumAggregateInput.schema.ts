@@ -4,7 +4,7 @@ import type { Prisma } from '@prisma/client'
 
 const Schema: z.ZodType<Prisma.EventSumAggregateInputType> = z
   .object({
-    maxJoiners: z.literal(true).optional()
+    maxUsers: z.literal(true).optional()
   })
   .strict()
 

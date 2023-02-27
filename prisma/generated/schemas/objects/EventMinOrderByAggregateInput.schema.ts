@@ -10,12 +10,10 @@ const Schema: z.ZodType<Prisma.EventMinOrderByAggregateInput> = z
     updatedAt: z.lazy(() => SortOrderSchema).optional(),
     description: z.lazy(() => SortOrderSchema).optional(),
     event_date: z.lazy(() => SortOrderSchema).optional(),
-    hobby_id: z.lazy(() => SortOrderSchema).optional(),
-    maxJoiners: z.lazy(() => SortOrderSchema).optional(),
-    seats: z.lazy(() => SortOrderSchema).optional(),
-    title: z.lazy(() => SortOrderSchema).optional(),
-    user_id: z.lazy(() => SortOrderSchema).optional(),
-    vehicle: z.lazy(() => SortOrderSchema).optional()
+    hobbyID: z.lazy(() => SortOrderSchema).optional(),
+    hostID: z.lazy(() => SortOrderSchema).optional(),
+    maxUsers: z.lazy(() => SortOrderSchema).optional(),
+    title: z.lazy(() => SortOrderSchema).optional()
   })
   .strict()
 

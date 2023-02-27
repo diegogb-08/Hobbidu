@@ -5,6 +5,8 @@ import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldU
 import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema'
 import { HobbyUpdateManyWithoutUserNestedInputObjectSchema } from './HobbyUpdateManyWithoutUserNestedInput.schema'
 import { UserUpdatehobbyIDsInputObjectSchema } from './UserUpdatehobbyIDsInput.schema'
+import { EventUpdateManyWithoutUsersNestedInputObjectSchema } from './EventUpdateManyWithoutUsersNestedInput.schema'
+import { UserUpdateeventIDsInputObjectSchema } from './UserUpdateeventIDsInput.schema'
 import { LocationNullableUpdateEnvelopeInputObjectSchema } from './LocationNullableUpdateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 
@@ -25,6 +27,8 @@ const Schema: z.ZodType<Prisma.UserUpdateInput> = z
     email: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
     hobbies: z.lazy(() => HobbyUpdateManyWithoutUserNestedInputObjectSchema).optional(),
     hobbyIDs: z.union([z.lazy(() => UserUpdatehobbyIDsInputObjectSchema), z.string().array()]).optional(),
+    events: z.lazy(() => EventUpdateManyWithoutUsersNestedInputObjectSchema).optional(),
+    eventIDs: z.union([z.lazy(() => UserUpdateeventIDsInputObjectSchema), z.string().array()]).optional(),
     location: z
       .union([
         z.lazy(() => LocationNullableUpdateEnvelopeInputObjectSchema),

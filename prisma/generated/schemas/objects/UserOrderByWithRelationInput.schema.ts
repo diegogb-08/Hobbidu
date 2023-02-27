@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { SortOrderSchema } from '../enums/SortOrder.schema'
 import { HobbyOrderByRelationAggregateInputObjectSchema } from './HobbyOrderByRelationAggregateInput.schema'
+import { EventOrderByRelationAggregateInputObjectSchema } from './EventOrderByRelationAggregateInput.schema'
 import { LocationOrderByInputObjectSchema } from './LocationOrderByInput.schema'
 
 import type { Prisma } from '@prisma/client'
@@ -15,6 +16,8 @@ const Schema: z.ZodType<Prisma.UserOrderByWithRelationInput> = z
     email: z.lazy(() => SortOrderSchema).optional(),
     hobbies: z.lazy(() => HobbyOrderByRelationAggregateInputObjectSchema).optional(),
     hobbyIDs: z.lazy(() => SortOrderSchema).optional(),
+    events: z.lazy(() => EventOrderByRelationAggregateInputObjectSchema).optional(),
+    eventIDs: z.lazy(() => SortOrderSchema).optional(),
     location: z.lazy(() => LocationOrderByInputObjectSchema).optional(),
     name: z.lazy(() => SortOrderSchema).optional(),
     password: z.lazy(() => SortOrderSchema).optional(),

@@ -3,7 +3,6 @@ import { StringWithAggregatesFilterObjectSchema } from './StringWithAggregatesFi
 import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
 import { StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema'
 import { IntWithAggregatesFilterObjectSchema } from './IntWithAggregatesFilter.schema'
-import { BoolWithAggregatesFilterObjectSchema } from './BoolWithAggregatesFilter.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -30,13 +29,11 @@ const Schema: z.ZodType<Prisma.EventScalarWhereWithAggregatesInput> = z
     updatedAt: z.union([z.lazy(() => DateTimeWithAggregatesFilterObjectSchema), z.date()]).optional(),
     description: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
     event_date: z.union([z.lazy(() => DateTimeWithAggregatesFilterObjectSchema), z.date()]).optional(),
-    hobby_id: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
-    joiners: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
-    maxJoiners: z.union([z.lazy(() => IntWithAggregatesFilterObjectSchema), z.number()]).optional(),
-    seats: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
-    title: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
-    user_id: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
-    vehicle: z.union([z.lazy(() => BoolWithAggregatesFilterObjectSchema), z.boolean()]).optional()
+    hobbyID: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
+    hostID: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
+    userIDs: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
+    maxUsers: z.union([z.lazy(() => IntWithAggregatesFilterObjectSchema), z.number()]).optional(),
+    title: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional()
   })
   .strict()
 

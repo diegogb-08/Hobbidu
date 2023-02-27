@@ -1,45 +1,82 @@
 import { Chip } from '@mui/material'
-import { Link, useFetcher, useLoaderData } from '@remix-run/react'
-import type { ActionFunction, DataFunctionArgs } from '@remix-run/server-runtime'
-import { json } from '@remix-run/server-runtime'
-import { useEffect, useId, useState } from 'react'
-import SubmitButton from '~/components/Buttons/SubmitButton'
-import TextField from '~/components/Form/TextField'
 import { getAllEventsByUserId } from '~/services/events.server'
 import { getAllHobbies } from '~/services/hobbies.server'
 import { getSession } from '~/services/session.server'
-import type { UserAuth } from '~/types/types'
-import type { EventsLoader } from './index'
-import GooglePlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-google-places-autocomplete'
 import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
-import type { Location } from '@prisma/client'
-import SelectForm from '~/components/Form/SelectForm'
-import { useField, ValidatedForm, validationError } from 'remix-validated-form'
-import { z } from 'zod'
-import { withZod } from '@remix-validated-form/with-zod'
-import { useHydrated } from 'remix-utils'
+import { redirect } from '@remix-run/server-runtime'
+import { Link, useLoaderData } from '@remix-run/react'
 import { TextArea } from '~/components/Form/TextArea'
+import { useField, ValidatedForm, validationError } from 'remix-validated-form'
+import { useState } from 'react'
+import { withZod } from '@remix-validated-form/with-zod'
+import { z } from 'zod'
+import { geocodeByPlaceId, getLatLng } from 'react-google-places-autocomplete'
+import SelectForm from '~/components/Form/SelectForm'
+import SubmitButton from '~/components/Buttons/SubmitButton'
+import TextField from '~/components/Form/TextField'
+import type { ActionFunction, DataFunctionArgs } from '@remix-run/server-runtime'
+import type { EventsLoader } from './index'
+// import type { Location } from '@prisma/client'
+import type { UserAuth } from '~/types/types'
+import { GooglePlaces } from '~/components/Form/GooglePlacesAutocomplete'
+import type { Location } from '@prisma/client'
+import { db } from '~/utils/db.server'
+import { EventCreateOneSchema } from 'prisma/generated/schemas'
+import { getUserAuthFromSession } from '~/services/user.server'
 
 const ScheduleSchema = z.object({
   title: z.string().min(1, { message: 'Please add a title for the event' }),
   paxNumber: z.coerce.number(),
-  description: z.string().min(1),
+  description: z
+    .string()
+    .min(1, { message: 'Please, give as much information as you can, so the joiners can get full info!' }),
   selectedHobbyId: z.string().min(1, { message: 'Please select 1 hobby' }),
   dateTime: z.string().min(1, { message: 'Date and time must be entered' }),
-  location: z.string().min(1)
+  placeId: z.string().min(1, { message: 'Please select a location' })
 })
 
 const validator = withZod(ScheduleSchema)
 
 export const action: ActionFunction = async ({ request }) => {
+  const userAuth = await getUserAuthFromSession(request)
+
   const { data, error } = await validator.validate(await request.formData())
   if (error) {
     return validationError(error)
   }
 
-  return json({
-    ...data
+  const { title, dateTime, description, paxNumber, placeId, selectedHobbyId } = data
+  let locationName: string = ''
+
+  const location: Location = await geocodeByPlaceId(placeId)
+    .then((results) => {
+      locationName = results[0].formatted_address
+      return getLatLng(results[0])
+    })
+    .then(({ lat, lng }) => {
+      return {
+        name: locationName,
+        coordinates: [lng, lat],
+        type: 'Point'
+      }
+    })
+
+  const event = EventCreateOneSchema.parse({
+    location,
+    title,
+    event_date: dateTime,
+    description,
+    maxUsers: paxNumber,
+    hobbyID: selectedHobbyId,
+    hostID: userAuth?.user.id,
+    userIDs: [userAuth?.user.id],
+    users: [userAuth?.user]
   })
+
+  db.event.create({
+    data: event.data
+  })
+  return redirect('/events')
 }
 
 interface ScheduleLoader extends EventsLoader {
@@ -63,24 +100,24 @@ export const loader = async ({ request }: DataFunctionArgs) => {
   return userAuth
 }
 
-interface Terms {
-  offset: number
-  value: string
-}
+// interface Terms {
+//   offset: number
+//   value: string
+// }
 
-interface LocationValue {
-  label: string
-  value: {
-    description: string
-    referend: string
-    tructured_formatting: {
-      main_text: string
-      secondary_text: string
-    }
-    terms: Terms[]
-    types: string[]
-  }
-}
+// interface LocationValue {
+//   label: string
+//   value: {
+//     description: string
+//     referend: string
+//     tructured_formatting: {
+//       main_text: string
+//       secondary_text: string
+//     }
+//     terms: Terms[]
+//     types: string[]
+//   }
+// }
 
 const paxOptions = Array.from({ length: 10 }, (_v, i) => 1 + i).splice(1)
 
@@ -92,19 +129,11 @@ const Schedule = () => {
     },
     formId: 'schedule'
   })
-  // const { error: errorLocation, clearError: clearErrorLocation } = useField('location', {
-  //   validationBehavior: {
-  //     initial: 'onSubmit',
-  //     whenSubmitted: 'onChange'
-  //   },
-  //   formId: 'schedule'
-  // })
-  const isHydrated = useHydrated()
-  const scheduleId = useId()
+
   const { hobbies, user, googleApiKey } = useLoaderData<ScheduleLoader | undefined>()
-  const [locationValue, setLocationValue] = useState<LocationValue | undefined>()
-  const [location, setLocation] = useState<Location | undefined>()
-  const fetcher = useFetcher()
+  // const [locationValue, setLocationValue] = useState<LocationValue | undefined>()
+  // const [location, setLocation] = useState<Location | undefined>()
+  // const fetcher = useFetcher()
   const [selectedHobbyId, setSelectedHobbyId] = useState<string | undefined>()
 
   const handleSelectHobby = (hobbyId: string) => {
@@ -112,26 +141,25 @@ const Schedule = () => {
     setSelectedHobbyId(hobbyId)
   }
 
-  const handleSubmit = () => {
-    const parsedLocation = JSON.stringify(location)
-    fetcher.submit({ location: parsedLocation }, { method: 'post' })
-  }
+  // const handleSelectLocation = (location: LocationValue) => {
+  //   console.log({ location })
+  //   clearErrorLocation()
+  //   setLocationValue(location)
+  //   geocodeByAddress(location?.label)
+  //     .then((results) => getLatLng(results[0]))
+  //     .then(({ lat, lng }) => {
+  //       setLocation({
+  //         name: location.label,
+  //         coordinates: [lng, lat],
+  //         type: 'Point'
+  //       })
+  //     })
+  // }
 
-  useEffect(() => {
-    if (locationValue?.label) {
-      geocodeByAddress(locationValue?.label)
-        .then((results) => getLatLng(results[0]))
-        .then(({ lat, lng }) => {
-          setLocation({
-            name: locationValue.label,
-            coordinates: [lng, lat],
-            type: 'Point'
-          })
-        })
-    }
-  }, [locationValue?.label])
-
-  console.log({ error })
+  // const handleSubmit = () => {
+  //   const parsedLocation = JSON.stringify(location)
+  //   fetcher.submit({ location: parsedLocation }, { method: 'post' })
+  // }
 
   return (
     <div className='flex justify-center mt-4'>
@@ -140,7 +168,6 @@ const Schedule = () => {
         validator={validator}
         method='post'
         className='flex-1 border border-gray rounded p-6 bg-white'
-        onSubmit={handleSubmit}
       >
         <Link to='/events' className='hover:underline text-fontcolor1 hover:text-fontcolor2'>
           Go Back
@@ -164,11 +191,9 @@ const Schedule = () => {
             )
           })}
         </h3>
-        {error && (
-          <div className='w-full flex justify-center text-xs'>
-            <span className='text-red text-center'>{error}</span>
-          </div>
-        )}
+        <div className='h-4 w-full flex items-start pl-2 justify-center'>
+          {!!error && <span className='text-xs text-red'>{error}</span>}
+        </div>
         <div className='flex flex-1'>
           <div className='flex flex-initial'>
             <TextField text='Date and time' name='dateTime' type='datetime-local' />
@@ -177,28 +202,11 @@ const Schedule = () => {
             <SelectForm text='Max. participants' name='paxNumber' options={paxOptions} defaultValue={2} />
           </div>
         </div>
-        <label>Location</label>
-        {isHydrated ? (
-          <GooglePlacesAutocomplete
-            apiKey={googleApiKey}
-            apiOptions={{
-              language: 'en',
-              region: 'es'
-            }}
-            selectProps={{
-              id: scheduleId,
-              instanceId: scheduleId,
-              value: locationValue,
-              onChange: setLocationValue
-            }}
-            onLoadFailed={(error) => console.error(error)}
-            minLengthAutocomplete={2}
-          />
-        ) : null}
+        <GooglePlaces title='Location' name='placeId' googleApiKey={googleApiKey} />
         <TextArea
           name='description'
           title='Description'
-          description='Try to give as much information as you can so the joiners can get full info!'
+          description='Try to give as much information as you can, so the joiners can get full info!'
         />
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </ValidatedForm>

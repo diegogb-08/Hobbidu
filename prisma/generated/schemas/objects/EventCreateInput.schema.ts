@@ -1,5 +1,7 @@
 import { z } from 'zod'
-import { EventCreatejoinersInputObjectSchema } from './EventCreatejoinersInput.schema'
+import { HobbyCreateNestedOneWithoutEventsInputObjectSchema } from './HobbyCreateNestedOneWithoutEventsInput.schema'
+import { UserCreateNestedManyWithoutEventsInputObjectSchema } from './UserCreateNestedManyWithoutEventsInput.schema'
+import { EventCreateuserIDsInputObjectSchema } from './EventCreateuserIDsInput.schema'
 import { LocationCreateEnvelopeInputObjectSchema } from './LocationCreateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 
@@ -12,17 +14,16 @@ const Schema: z.ZodType<Prisma.EventCreateInput> = z
     updatedAt: z.date().optional(),
     description: z.string(),
     event_date: z.date(),
-    hobby_id: z.string(),
-    joiners: z.union([z.lazy(() => EventCreatejoinersInputObjectSchema), z.string().array()]).optional(),
+    hobby: z.lazy(() => HobbyCreateNestedOneWithoutEventsInputObjectSchema),
+    users: z.lazy(() => UserCreateNestedManyWithoutEventsInputObjectSchema).optional(),
+    hostID: z.string(),
+    userIDs: z.union([z.lazy(() => EventCreateuserIDsInputObjectSchema), z.string().array()]).optional(),
     location: z.union([
       z.lazy(() => LocationCreateEnvelopeInputObjectSchema),
       z.lazy(() => LocationCreateInputObjectSchema)
     ]),
-    maxJoiners: z.number(),
-    seats: z.string(),
-    title: z.string(),
-    user_id: z.string(),
-    vehicle: z.boolean()
+    maxUsers: z.number(),
+    title: z.string()
   })
   .strict()
 

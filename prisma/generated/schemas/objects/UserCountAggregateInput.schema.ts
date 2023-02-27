@@ -11,6 +11,7 @@ const Schema: z.ZodType<Prisma.UserCountAggregateInputType> = z
     updatedAt: z.literal(true).optional(),
     email: z.literal(true).optional(),
     hobbyIDs: z.literal(true).optional(),
+    eventIDs: z.literal(true).optional(),
     name: z.literal(true).optional(),
     password: z.literal(true).optional(),
     phone_number: z.literal(true).optional(),
