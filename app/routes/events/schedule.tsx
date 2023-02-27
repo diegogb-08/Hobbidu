@@ -18,6 +18,7 @@ import { useField, ValidatedForm, validationError } from 'remix-validated-form'
 import { z } from 'zod'
 import { withZod } from '@remix-validated-form/with-zod'
 import { useHydrated } from 'remix-utils'
+import { TextArea } from '~/components/Form/TextArea'
 
 const ScheduleSchema = z.object({
   title: z.string().min(1, { message: 'Please add a title for the event' }),
@@ -194,19 +195,11 @@ const Schedule = () => {
             minLengthAutocomplete={2}
           />
         ) : null}
-
-        <div className='flex flex-1 flex-col my-4'>
-          <label htmlFor='description'>Description</label>
-          <span className='text-xs'>Try to give as much information as you can so the joiners can get full info!</span>
-          <textarea
-            className='block w-full px-2 py-1.5 text-base font-normal bg-white bg-clip-padding border border-solid border-gray rounded transition ease-in-out
-                    m-0 focus:bg-white focus:border-blue focus:outline-non'
-            cols={30}
-            rows={8}
-            name='description'
-            maxLength={3000}
-          />
-        </div>
+        <TextArea
+          name='description'
+          title='Description'
+          description='Try to give as much information as you can so the joiners can get full info!'
+        />
         <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
       </ValidatedForm>
     </div>

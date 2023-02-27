@@ -74,8 +74,8 @@ module.exports = {
         }
       }
     ],
-    'unicorn/no-array-reduce': 'off'
-    // 'prettier/prettier': 'off'
+    'unicorn/no-array-reduce': 'off',
+    'prettier/prettier': 'off'
   },
   overrides: [
     {
