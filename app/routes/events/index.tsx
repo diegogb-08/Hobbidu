@@ -4,7 +4,6 @@ import { useLoaderData } from '@remix-run/react'
 import type { DataFunctionArgs } from '@remix-run/server-runtime'
 import LinkButton from '~/components/Buttons/LinkButton'
 import AddIcon from '~/icons/AddIcon'
-import { getAllHobbies } from '~/services/hobbies.server'
 import { UserAuthSchema } from '~/types/types'
 import { getAllEventsByHostId, getAllEventsByUserId } from '~/services/events.server'
 import { getSession } from '~/services/session.server'
@@ -18,12 +17,10 @@ export const loader = async ({ request }: DataFunctionArgs) => {
   const userAuth = UserAuthSchema.parse(await session.get('sessionKey'))
 
   if (userAuth) {
-    const hobbies = await getAllHobbies()
     const participatingEvents = await getAllEventsByUserId(userAuth.user.id)
     const hostingEvents = await getAllEventsByHostId(userAuth.user.id)
     return {
       ...userAuth,
-      hobbies,
       hostingEvents,
       participatingEvents
     }
@@ -51,14 +48,15 @@ const Index = () => {
     }
   }, [])
 
+  console.log(data)
+
   return (
     <>
       <div className='flex w-full justify-center mt-4'>
         <div className='flex flex-col lg:inline-block border border-gray rounded p-6'>
           <h1 className='font-bold text-lg'>This are the hobbies you can create events</h1>
           <div className='flex flex-wrap justify-center mt-4'>
-            {data?.user?.hobbyIDs.map((hobbyId) => {
-              const hobby = data.hobbies[hobbyId]
+            {data?.user?.hobbies?.map((hobby) => {
               return (
                 <Chip
                   style={{ marginRight: '16px', marginBottom: '16px' }}

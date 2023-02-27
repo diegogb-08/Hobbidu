@@ -85,7 +85,7 @@ model User {
   birth_date   DateTime? @db.Date
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  email        String    @unique(map: "email_1")
+  email        String    @unique()
   hobbies      Hobby[]   @relation(fields: [hobbyIDs], references: [id])
   hobbyIDs     String[]  @db.ObjectId
   events       Event[]   @relation(fields: [eventIDs], references: [id])
@@ -95,7 +95,7 @@ model User {
   password     String
   phone_number String?
   profile_img  String?
-  user_name    String    @unique(map: "user_name_1")
+  user_name    String    @unique()
 
   @@index([location], map: "location_2dsphere")
 }

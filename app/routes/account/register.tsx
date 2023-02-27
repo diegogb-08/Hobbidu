@@ -43,16 +43,17 @@ export const action = async ({ request }: DataFunctionArgs) => {
     )
   )
   const result = await serverValidator.validate(await clonedRequest.formData())
-
+  console.log({ result })
   if (result.error) {
     return validationError(result.error)
   }
 
-  await authenticator.authenticate(AuthStrategy.STANDARD, request, {
+  const response = await authenticator.authenticate(AuthStrategy.STANDARD, request, {
     successRedirect: '/',
     failureRedirect: '/account/login',
     throwOnError: true
   })
+  console.log('REGISTER RESPONSE: ====>', { response })
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -83,8 +84,8 @@ const Register = () => {
         <div className='h-8' />
         <TextField text='User Name' placeholder='User.01' type='text' name='user_name' />
         <TextField text='Email' placeholder='email@email.com' type='text' name='email' />
-        <TextField text='Password' type='text' name='password' />
-        <TextField text='Confirm Password' type='text' name='passwordConfirm' />
+        <TextField text='Password' type='password' name='password' />
+        <TextField text='Confirm Password' type='password' name='passwordConfirm' />
         {error && (
           <div className='h-16 w-full flex justify-center'>
             <span className='text-red text-center'>{error}</span>

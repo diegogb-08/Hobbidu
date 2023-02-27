@@ -40,6 +40,9 @@ authenticator
         const user = await db.user.findUnique({
           where: {
             email: profile.emails[0].value
+          },
+          include: {
+            hobbies: true
           }
         })
         if (user) {

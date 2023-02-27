@@ -52,6 +52,9 @@ export const login = async (formData: FormData) => {
   const user = await db.user.findUnique({
     where: {
       email
+    },
+    include: {
+      hobbies: true
     }
   })
   if (user) {
@@ -62,11 +65,11 @@ export const login = async (formData: FormData) => {
       user,
       tokenCreationDate: new Date()
     }
-
     const token = jwt.sign(payload, SECRET, {
       expiresIn: '1w'
     })
     const parsedUser = UserSchema.parse(user)
+    console.log({ parsedUser })
     return { user: parsedUser, token }
   }
   throw new Error('User not found')

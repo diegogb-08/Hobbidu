@@ -14,6 +14,14 @@ export interface FormValues {
   password?: FormDataEntryValue | null
 }
 
+export const HobbySchema: z.ZodType<Hobby> = z.object({
+  id: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  name: z.string(),
+  userIDs: z.array(z.string())
+})
+
 export const LocationSchema: z.ZodType<Location> = z.object({
   coordinates: z.tuple([z.number(), z.number()]),
   name: z.string(),
@@ -24,11 +32,12 @@ export const UserSchema = z.object({
   id: z.string(),
   bio: z.string().nullable(),
   birth_date: z.date().nullable(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
   email: z.string(),
-  hobbies: z.array(z.string()).optional(),
+  hobbies: z.array(HobbySchema).optional(),
   hobbyIDs: z.array(z.string()),
+  eventIDs: z.array(z.string()),
   location: LocationSchema.nullable(),
   name: z.string().nullable(),
   password: z.string(),

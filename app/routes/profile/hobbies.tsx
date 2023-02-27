@@ -58,6 +58,9 @@ export const action = async ({ request }: DataFunctionArgs) => {
           where: { id: userAuth.user.id },
           data: {
             hobbyIDs
+          },
+          include: {
+            hobbies: true
           }
         })
         session.set(authenticator.sessionKey, { user: userUpdated, token: userAuth.token })
