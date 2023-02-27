@@ -31,7 +31,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
   const result = await getFormData(request, HobbiesSchema)
   let hobbyName: string | undefined
   let hobbyId: string | null = null
-  console.log({ result, userAuth })
   if (result.success && userAuth?.user) {
     hobbyName = result.data?.hobbyName
     const _action = result.data?._action
@@ -61,7 +60,6 @@ export const action = async ({ request }: DataFunctionArgs) => {
             hobbyIDs
           }
         })
-        console.log({ userUpdated, hobbyIDs })
         session.set(authenticator.sessionKey, { user: userUpdated, token: userAuth.token })
         const headers = new Headers({ 'Set-Cookie': await commitSession(session) })
         return redirect('/', { headers })

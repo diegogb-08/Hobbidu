@@ -15,8 +15,7 @@ import SelectForm from '~/components/Form/SelectForm'
 import SubmitButton from '~/components/Buttons/SubmitButton'
 import TextField from '~/components/Form/TextField'
 import type { DataFunctionArgs } from '@remix-run/server-runtime'
-import type { EventsLoader } from './index'
-import type { UserAuth } from '~/types/types'
+import type { HobbiesRecord, UserAuth } from '~/types/types'
 import { LocationSchema } from '~/types/types'
 import type { LocationValue } from '~/components/Form/GooglePlacesAutocomplete'
 import { GooglePlaces } from '~/components/Form/GooglePlacesAutocomplete'
@@ -75,9 +74,11 @@ export const action = async ({ request }: DataFunctionArgs) => {
   }
 }
 
-interface ScheduleLoader extends EventsLoader {
+type ScheduleLoader = {
   googleApiKey: string | undefined
-}
+  hobbies: HobbiesRecord
+  events: Event[]
+} & UserAuth
 
 export const loader = async ({ request }: DataFunctionArgs) => {
   const session = await getSession(request.headers.get('Cookie'))
