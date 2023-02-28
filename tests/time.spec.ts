@@ -1,21 +1,17 @@
 // Unit Test
-import { getToday } from '../app/utils/time'
+import { getDate } from '../app/utils/time'
 
-describe('getToday', () => {
-  it('should return a string in the format YYYY/MM/DD', () => {
-    const today = getToday()
+describe('getDate', () => {
+  it('should return the date in dd/mm/yyyy format', () => {
+    const date = new Date(2020, 3, 15) // 15 April 2020
+    const expected = '2020/04/15'
 
-    expect(today).toMatch(/\d{4}(?:\/\d{2}){2}/)
+    expect(getDate(date)).to.equal(expected)
   })
 
-  it('should return the current date', () => {
-    const today = getToday()
+  it('should return the current date if no argument is passed', () => {
+    const expected = new Date().toLocaleDateString().split('/').reverse().join('/')
 
-    const dateObject = new Date()
-    const month = dateObject.getUTCMonth() + 1 // months from 1-12
-    const day = dateObject.getUTCDate()
-    const year = dateObject.getUTCFullYear()
-
-    expect(today).toBe(`${year}/${month}/${day}`)
+    expect(getDate()).to.equal(expected)
   })
 })
