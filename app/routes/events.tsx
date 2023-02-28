@@ -33,7 +33,7 @@ const Events = () => {
         node.removeEventListener('mouseout', handleMouseOut)
       }
     }
-  }, [])
+  }, [userId])
 
   return (
     <AppContainer>
@@ -44,7 +44,7 @@ const Events = () => {
             <div className='flex flex-col lg:inline-block border border-gray rounded p-6'>
               <h1 className='font-bold text-lg'>This are the hobbies you can create events</h1>
               <div className='flex flex-wrap justify-center mt-4'>
-                {data?.user?.hobbies?.map((hobby) => {
+                {data?.user.hobbies?.map((hobby) => {
                   return (
                     <Chip
                       style={{ marginRight: '16px', marginBottom: '16px' }}
@@ -57,7 +57,7 @@ const Events = () => {
                 })}
               </div>
               <div className='flex justify-center'>
-                <LinkButton to='create' color='primary' ref={ref}>
+                <LinkButton to='create' color='primary' ref={ref} onClick={handleMouseOut}>
                   <div className='flex flex-row flex-1'>
                     <AddIcon color={isHovered ? '#ffffff' : undefined} style={{ marginRight: '8px' }} />
                     <span>Create Event</span>

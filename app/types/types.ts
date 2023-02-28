@@ -13,17 +13,19 @@ export interface FormValues {
   email?: FormDataEntryValue | null
   password?: FormDataEntryValue | null
 }
-export const CoercedDate = z.coerce.date()
+export const CoercedDate = z.coerce.string()
 
 export type ZodCoercedDate = z.infer<typeof CoercedDate>
 
-export const HobbySchema: z.ZodType<Hobby> = z.object({
+export const HobbySchema = z.object({
   id: z.string(),
   createdAt: CoercedDate,
   updatedAt: CoercedDate,
   name: z.string(),
   userIDs: z.array(z.string())
 })
+
+export type ZodHobby = z.infer<typeof HobbySchema>
 
 export const LocationSchema: z.ZodType<Location> = z.object({
   coordinates: z.tuple([z.number(), z.number()]),
@@ -34,7 +36,7 @@ export const LocationSchema: z.ZodType<Location> = z.object({
 export const UserSchema = z.object({
   id: z.string(),
   bio: z.string().nullable(),
-  birth_date: z.date().nullable(),
+  birth_date: CoercedDate.nullable(),
   createdAt: CoercedDate,
   updatedAt: CoercedDate,
   email: z.string(),
@@ -60,3 +62,21 @@ export type UserAuth = z.infer<typeof UserAuthSchema>
 export type ZodUser = z.infer<typeof UserSchema>
 
 export type HobbiesRecord = Record<string, Hobby>
+
+export const EventWithHobbyAndUsers = z.object({
+  id: z.string(),
+  createdAt: CoercedDate,
+  updatedAt: CoercedDate,
+  description: z.string(),
+  event_date: CoercedDate,
+  hobbyID: z.string(),
+  hobby: HobbySchema,
+  hostID: z.string(),
+  userIDs: z.array(z.string()),
+  users: z.array(UserSchema),
+  location: LocationSchema,
+  maxUsers: z.number(),
+  title: z.string()
+})
+
+export type ZodEventWithHobbyAndUsers = z.infer<typeof EventWithHobbyAndUsers>
