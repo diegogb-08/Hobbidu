@@ -139,16 +139,10 @@ const Index = () => {
                               />
                               <div className='flex flex-row'>
                                 <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  Participants:
+                                  {event.userIDs.length} attendees
                                 </span>
                                 <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  {event.userIDs.length}
-                                </span>
-                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  Spots Left:
-                                </span>
-                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  {event.maxUsers - event.userIDs.length}
+                                  {event.maxUsers - event.userIDs.length} spots left
                                 </span>
                               </div>
                             </div>
