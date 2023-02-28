@@ -23,6 +23,7 @@ import type { Location } from '@prisma/client'
 import { db } from '~/utils/db.server'
 import { EventCreateInputObjectSchema } from 'prisma/generated/schemas'
 import invariant from 'tiny-invariant'
+import { Routes } from '../routes'
 
 const ScheduleSchema = z.object({
   title: z.string().min(1, { message: 'Please add a title for the event' }),
@@ -141,7 +142,11 @@ const Schedule = () => {
         method='post'
         className='flex-1 border border-gray rounded p-6 bg-white'
       >
-        <Link to='/events' className='hover:underline text-fontcolor1 hover:text-fontcolor2'>
+        <Link
+          to={`${Routes.EVENTS}/${user.id}`}
+          prefetch='render'
+          className='hover:underline text-fontcolor1 hover:text-fontcolor2'
+        >
           Go Back
         </Link>
         <h2 className='text-xl text-center font-bold text-fontcolor1'>Create an Event 🗓️</h2>

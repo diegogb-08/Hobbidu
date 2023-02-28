@@ -5,7 +5,11 @@ import CalendarPlusIcon from '~/icons/CalendarPlusIcon'
 import HomeIcon from '~/icons/HomeIcon'
 import { Routes } from '~/routes/routes'
 
-const NavBar = () => {
+interface Props {
+  userId: string
+}
+
+const NavBar = ({ userId }: Props) => {
   const match = useMatches()
   return (
     <nav className='flex w-80 justify-between'>
@@ -14,7 +18,7 @@ const NavBar = () => {
           <HomeIcon color={match[1].id.includes('index') ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
-      <Link to={Routes.EVENTS}>
+      <Link to={`${Routes.EVENTS}/${userId}`} prefetch='intent'>
         <IconButton>
           <CalendarPlusIcon color={match[1].id.includes(Routes.EVENTS) ? '#f05356' : '#acacacc4'} />
         </IconButton>

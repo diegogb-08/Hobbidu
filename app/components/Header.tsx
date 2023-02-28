@@ -13,7 +13,7 @@ const Header = ({ user }: { user?: ZodUser }) => {
         <img className='h-4/5' src={logo} alt='logo' />
       </Link>
       {user && user?.hobbyIDs?.length > 0 ? (
-        <NavBar />
+        <NavBar userId={user.id} />
       ) : !matches[1]?.pathname?.includes('account') && !matches[2]?.pathname?.includes('hobbies') ? (
         <div>
           <LinkButton to='/account/register' text='Register' color='blue' className='hidden lg:inline' />
