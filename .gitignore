@@ -6,3 +6,7 @@ node_modules
 .env
 hobbidu.code-workspace
 .vercel
+/test-results/
+/playwright-report/
+/playwright/.cache/
+coverage

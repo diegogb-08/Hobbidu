@@ -12,8 +12,7 @@ module.exports = {
     'prettier',
     'plugin:unicorn/recommended',
     'plugin:cypress/recommended',
-    '@remix-run/eslint-config',
-    '@remix-run/eslint-config/jest-testing-library'
+    '@remix-run/eslint-config'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {

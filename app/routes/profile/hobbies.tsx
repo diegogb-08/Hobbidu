@@ -13,8 +13,7 @@ import TextField from '~/components/Form/TextField'
 import { authenticator } from '~/services/auth.server'
 import { db } from '~/utils/db.server'
 import SubmitButton from '../../components/Buttons/SubmitButton'
-import { commitSession, getSession } from '~/services/session.server'
-import { getUserAuthFromSession } from '~/services/user.server'
+import { commitSession, getSession, getUserAuthFromSession } from '~/services/session.server'
 
 const HobbiesSchema = z.object({
   _action: z.enum(['find', 'update']),

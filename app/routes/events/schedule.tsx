@@ -1,7 +1,7 @@
 import { Chip } from '@mui/material'
-import { getAllEventsByUserId } from '~/services/events.server'
+import { getNextEventsByUserId } from '~/services/events.server'
 import { getAllHobbies } from '~/services/hobbies.server'
-import { getSession } from '~/services/session.server'
+import { getSession, getUserAuthFromSession } from '~/services/session.server'
 import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
 import { redirect } from '@remix-run/server-runtime'
 import { Link, useLoaderData } from '@remix-run/react'
@@ -22,7 +22,6 @@ import { GooglePlaces } from '~/components/Form/GooglePlacesAutocomplete'
 import type { Location } from '@prisma/client'
 import { db } from '~/utils/db.server'
 import { EventCreateInputObjectSchema } from 'prisma/generated/schemas'
-import { getUserAuthFromSession } from '~/services/user.server'
 import invariant from 'tiny-invariant'
 
 const ScheduleSchema = z.object({
@@ -86,7 +85,7 @@ export const loader = async ({ request }: DataFunctionArgs) => {
 
   if (userAuth) {
     const hobbies = await getAllHobbies()
-    const events = await getAllEventsByUserId(userAuth.user.id)
+    const events = await getNextEventsByUserId(userAuth.user.id)
     return {
       ...userAuth,
       hobbies,

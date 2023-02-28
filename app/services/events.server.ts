@@ -1,6 +1,8 @@
 import { db } from '~/utils/db.server'
 
-export const getAllEventsByUserId = async (userId: string) => {
+export const getNextEventsByUserId = async (userId: string) => {
+  const dateTime = new Date().toISOString()
+  const [date] = dateTime.split('T')
   return db.event.findMany({
     orderBy: {
       event_date: 'asc'
@@ -10,6 +12,9 @@ export const getAllEventsByUserId = async (userId: string) => {
       NOT: {
         userIDs: {
           has: userId
+        },
+        AND: {
+          event_date: { gte: new Date(date) }
         }
       }
     },
@@ -20,13 +25,18 @@ export const getAllEventsByUserId = async (userId: string) => {
   })
 }
 
-export const getAllEventsByHostId = async (userId: string) => {
+export const getNextEventsByHostId = async (userId: string) => {
+  const dateTime = new Date().toISOString()
+  const [date] = dateTime.split('T')
   return db.event.findMany({
     orderBy: {
       event_date: 'asc'
     },
     where: {
-      hostID: userId
+      hostID: userId,
+      AND: {
+        event_date: { gte: new Date(date) }
+      }
     },
     include: {
       hobby: true,

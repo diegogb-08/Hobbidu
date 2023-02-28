@@ -6,9 +6,7 @@ import { getParams } from 'remix-params-helper'
 import { z } from 'zod'
 import invariant from 'tiny-invariant'
 import type { NewUser } from '~/routes/account/register'
-import { UserAuthSchema, UserSchema } from '~/types/types'
-import { getSession } from './session.server'
-import type { DataFunctionArgs } from '@remix-run/server-runtime'
+import { UserSchema } from '~/types/types'
 
 export enum SessionErrorKey {
   WrongFieldType = 'wrong_field_type',
@@ -69,7 +67,6 @@ export const login = async (formData: FormData) => {
       expiresIn: '1w'
     })
     const parsedUser = UserSchema.parse(user)
-    console.log({ parsedUser })
     return { user: parsedUser, token }
   }
   throw new Error('User not found')
@@ -96,9 +93,4 @@ export const isUserRegistered = async ({ email, user_name, password }: NewUser) 
     console.error({ error })
     return isRegistered
   }
-}
-
-export const getUserAuthFromSession = async (request: DataFunctionArgs['request']) => {
-  const session = await getSession(request.headers.get('Cookie'))
-  return UserAuthSchema.parse(await session.get('sessionKey'))
 }

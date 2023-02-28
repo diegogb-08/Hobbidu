@@ -5,9 +5,17 @@ import type { DataFunctionArgs } from '@remix-run/server-runtime'
 import LinkButton from '~/components/Buttons/LinkButton'
 import AddIcon from '~/icons/AddIcon'
 import { UserAuthSchema } from '~/types/types'
-import { getAllEventsByHostId, getAllEventsByUserId } from '~/services/events.server'
+import { getNextEventsByHostId, getNextEventsByUserId } from '~/services/events.server'
 import { getSession } from '~/services/session.server'
 import { authenticator } from '~/services/auth.server'
+import type { Hobby, User, Event } from '@prisma/client'
+
+type EventWithHobbiesAndUsers = Event & {
+  hobby: Hobby
+  users: User[]
+}
+
+type EventRecord = Record<string, EventWithHobbiesAndUsers[]>
 
 export const loader = async ({ request }: DataFunctionArgs) => {
   await authenticator.isAuthenticated(request, {
@@ -17,12 +25,30 @@ export const loader = async ({ request }: DataFunctionArgs) => {
   const userAuth = UserAuthSchema.parse(await session.get('sessionKey'))
 
   if (userAuth) {
-    const participatingEvents = await getAllEventsByUserId(userAuth.user.id)
-    const hostingEvents = await getAllEventsByHostId(userAuth.user.id)
+    const participatingEvents = await getNextEventsByUserId(userAuth.user.id)
+    const hostingEvents = await getNextEventsByHostId(userAuth.user.id)
+
+    const groupByDateTime = (event: EventWithHobbiesAndUsers[]) => {
+      const eventRecord: EventRecord = {}
+      event.reduce((_, currentEvent) => {
+        const existingKeys = Object.keys(eventRecord)
+        const eventDate = currentEvent.event_date.toISOString()
+        if (existingKeys.includes(eventDate)) {
+          eventRecord[eventDate].push(currentEvent)
+        } else {
+          eventRecord[eventDate] = [currentEvent]
+        }
+        return eventRecord
+      }, {})
+      return eventRecord
+    }
+    const hostingEventRecord = groupByDateTime(hostingEvents)
+    const participatingEventsRecord = groupByDateTime(participatingEvents)
+
     return {
       ...userAuth,
-      hostingEvents,
-      participatingEvents
+      hostingEvents: hostingEventRecord,
+      participatingEvents: participatingEventsRecord
     }
   }
   return userAuth
@@ -47,8 +73,6 @@ const Index = () => {
       }
     }
   }, [])
-
-  console.log(data)
 
   return (
     <>
@@ -79,34 +103,61 @@ const Index = () => {
         </div>
       </div>
       <div className='flex w-full flex-col'>
-        <h2 className='text-lg my-6'>Upcoming hosting events:</h2>
-        {data?.hostingEvents.map((event) => {
-          return (
-            <div key={event.id} className='bg-white shadow-lg rounded-lg overflow-hidden mb-4'>
-              <div className='px-6 py-4'>
-                <h3 className='text-xl font-bold text-gray-800 mb-2'>{event.title}</h3>
-                <p className='text-gray-700 text-base mb-2'>{event.description}</p>
-                <div className='flex items-center justify-between'>
-                  <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                    {event.event_date}
-                  </span>
-                  <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                    {event.maxUsers}
-                  </span>
-                  <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                    {event.location.name}
-                  </span>
-                  <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                    {event.hobbyID}
-                  </span>
-                  <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                    {event.userIDs}
-                  </span>
-                </div>
-              </div>
+        {data?.hostingEvents && Object.keys(data?.hostingEvents).length > 0 ? (
+          <>
+            <h2 className='text-lg my-6'>Upcoming hosting events:</h2>
+            <div className='p-0 bg-clip-padding bg-cover bg-transparent relative h-full flex bg-white z-0 break-words transition-shadow duration-300 w-full flex-col justify-start py-4 border-t border-gray3 md:pt-4 md:pb-5'>
+              {Object.keys(data?.hostingEvents).map((eventDate) => {
+                return (
+                  <div key={eventDate}>
+                    <h2 className='text-xl md:text-xl font-medium pb-3 border-b-2 border-gray5 capitalize'>
+                      {eventDate}
+                    </h2>
+                    {data?.hostingEvents[eventDate].map((event) => {
+                      return (
+                        <div
+                          key={event.id}
+                          className='p-0 bg-clip-padding bg-cover bg-transparent relative flex bg-white z-0 break-words transition-shadow duration-300 w-full flex-row justify-start py-4 border-t border-gray3 md:pt-4 md:pb-5'
+                        >
+                          <div className='px-6 py-4'>
+                            <header className='flex flex-row justify-between'>
+                              <h3 className='text-xl font-bold text-gray-800 mb-2'>{event.title}</h3>
+                              <span className='flex justify-between md:items-center flex-col-reverse md:flex-row'>
+                                {event.event_date}
+                              </span>
+                            </header>
+                            <p className='text-gray-700 text-base mb-2'>{event.description}</p>
+                            <div className='flex items-center justify-between'>
+                              <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
+                                {event.location.name}
+                              </span>
+                              <Chip
+                                style={{ marginRight: '16px', marginBottom: '16px' }}
+                                variant='filled'
+                                label={event.hobby.name?.toUpperCase()}
+                                color='success'
+                              />
+                              <div className='flex flex-row'>
+                                <span>Participants:</span>
+                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
+                                  {event.userIDs.length}
+                                </span>
+                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
+                                  Spots Left:
+                                </span>
+                                <span>{event.maxUsers - event.userIDs.length}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )
+              })}
             </div>
-          )
-        })}
+          </>
+        ) : undefined}
       </div>
     </>
   )

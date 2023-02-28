@@ -1,6 +1,8 @@
 // app/services/session.server.ts
+import type { DataFunctionArgs } from '@remix-run/node'
 import { createCookieSessionStorage } from '@remix-run/node'
 import invariant from 'tiny-invariant'
+import { UserAuthSchema } from '~/types/types'
 import { SECRET } from './constants'
 
 invariant(SECRET, 'Secret is not defined at the session.server')
@@ -19,3 +21,8 @@ export const sessionStorage = createCookieSessionStorage({
 
 // you can also export the methods individually for your own usage
 export const { getSession, commitSession, destroySession } = sessionStorage
+
+export const getUserAuthFromSession = async (request: DataFunctionArgs['request']) => {
+  const session = await getSession(request.headers.get('Cookie'))
+  return UserAuthSchema.parse(await session.get('sessionKey'))
+}

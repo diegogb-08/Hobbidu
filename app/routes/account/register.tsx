@@ -43,17 +43,15 @@ export const action = async ({ request }: DataFunctionArgs) => {
     )
   )
   const result = await serverValidator.validate(await clonedRequest.formData())
-  console.log({ result })
   if (result.error) {
     return validationError(result.error)
   }
 
-  const response = await authenticator.authenticate(AuthStrategy.STANDARD, request, {
+  await authenticator.authenticate(AuthStrategy.STANDARD, request, {
     successRedirect: '/',
     failureRedirect: '/account/login',
     throwOnError: true
   })
-  console.log('REGISTER RESPONSE: ====>', { response })
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
