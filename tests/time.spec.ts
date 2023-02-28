@@ -1,5 +1,5 @@
 // Unit Test
-import { getDate, getDateTitle } from '../app/utils/time'
+import { getDate, getDateAndTime, getDateTitle } from '../app/utils/time'
 
 describe('getDate', () => {
   it('should return the date in dd/mm/yyyy format', () => {
@@ -18,9 +18,8 @@ describe('getDate', () => {
 
 describe('getDateTitle', () => {
   it('should return Today when date is today', () => {
-    const date = new Date()
-
-    const result = getDateTitle(date.toString())
+    const today = getDate()
+    const result = getDateTitle(today)
 
     expect(result).toBe('Today')
   })
@@ -31,5 +30,18 @@ describe('getDateTitle', () => {
     const result = getDateTitle(date.toString())
 
     expect(result).toBe('June 15, 2020')
+  })
+})
+
+describe('getDateAndTime', () => {
+  it('should return the date and time in the correct format', () => {
+    const date = '2020-01-01T12:00:00'
+    const expected = 'Wednesday, January 1, 2020 at 12:00 PM'
+
+    expect(getDateAndTime(date)).toEqual(expected)
+  })
+
+  it('should throw an error if an invalid date is provided', () => {
+    expect(() => getDateAndTime('invalid')).toThrowError()
   })
 })

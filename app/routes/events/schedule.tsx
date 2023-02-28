@@ -4,7 +4,7 @@ import { getAllHobbies } from '~/services/hobbies.server'
 import { getSession, getUserAuthFromSession } from '~/services/session.server'
 import { GOOGLE_PLACES_API_KEY } from '../../services/constants'
 import { redirect } from '@remix-run/server-runtime'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, useTransition } from '@remix-run/react'
 import { TextArea } from '~/components/Form/TextArea'
 import { useField, ValidatedForm, validationError } from 'remix-validated-form'
 import { useState } from 'react'
@@ -99,6 +99,8 @@ export const loader = async ({ request }: DataFunctionArgs) => {
 const paxOptions = Array.from({ length: 10 }, (_v, i) => 1 + i).splice(1)
 
 const Schedule = () => {
+  const transition = useTransition()
+  const isSubmitting = transition.state === 'submitting'
   const { error, clearError } = useField('selectedHobbyId', {
     validationBehavior: {
       initial: 'onSubmit',
@@ -179,7 +181,7 @@ const Schedule = () => {
           description='Try to give as much information as you can, so the joiners can get full info!'
         />
         <TextField name='location' type='hidden' value={location} />
-        <SubmitButton name='selectedHobbyId' value={selectedHobbyId} />
+        <SubmitButton name='selectedHobbyId' value={selectedHobbyId} isSubmitting={isSubmitting} />
       </ValidatedForm>
     </div>
   )

@@ -10,10 +10,14 @@ export const getDate = (date: Date = new Date()) => {
 
 export const getDateTitle = (date: string) => {
   const today = getDate()
-  const parsedDate = getDate(CoercedDate.parse(date))
-  if (today === parsedDate) {
+  const parsedDate = CoercedDate.parse(date)
+  if (today === date) {
     return 'Today'
   } else {
     return new Date(parsedDate).toLocaleDateString('en', { dateStyle: 'long' })
   }
+}
+
+export const getDateAndTime = (date: string) => {
+  return new Intl.DateTimeFormat('en', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(date))
 }

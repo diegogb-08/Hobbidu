@@ -9,6 +9,7 @@ const SubmitButton = ({ isSubmitting, text, ...restOfProps }: Props) => {
   return (
     <button
       type='submit'
+      disabled={isSubmitting}
       className='w-full bg-transparent bg-primary font-semibold text-fontcolor-white py-2 px-4 border rounded'
       {...restOfProps}
     >

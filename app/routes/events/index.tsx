@@ -9,7 +9,7 @@ import { getNextEventsByHostId, getNextEventsByUserId } from '~/services/events.
 import { getSession } from '~/services/session.server'
 import { authenticator } from '~/services/auth.server'
 import type { Hobby, User, Event } from '@prisma/client'
-import { getDateTitle } from '~/utils/time'
+import { getDate, getDateAndTime, getDateTitle } from '~/utils/time'
 
 type EventWithHobbiesAndUsers = Event & {
   hobby: Hobby
@@ -33,7 +33,7 @@ export const loader = async ({ request }: DataFunctionArgs) => {
       const eventRecord: EventRecord = {}
       event.reduce((_, currentEvent) => {
         const existingKeys = Object.keys(eventRecord)
-        const eventDate = currentEvent.event_date.toISOString()
+        const eventDate = getDate(currentEvent.event_date)
         if (existingKeys.includes(eventDate)) {
           eventRecord[eventDate].push(currentEvent)
         } else {
@@ -120,15 +120,14 @@ const Index = () => {
                           key={event.id}
                           className='p-0 bg-clip-padding bg-cover bg-transparent relative flex bg-white z-0 break-words transition-shadow duration-300 w-full flex-row justify-start py-4 border-t border-gray3 md:pt-4 md:pb-5'
                         >
-                          <div className='px-6 py-4'>
+                          <div className='px-6 py-4 w-full'>
                             <header className='flex flex-row justify-between'>
                               <h3 className='text-xl font-bold text-gray-800 mb-2'>{event.title}</h3>
-                              <span className='flex justify-between md:items-center flex-col-reverse md:flex-row'>
-                                {event.event_date}
+                              <span className='flex flex-col text-sm leading-5 tracking-tight text-darkGold font-medium pb-1 pt-1 line-clamp-1 lg:line-clamp-2er'>
+                                {getDateAndTime(event.event_date)}
                               </span>
                             </header>
-                            <p className='text-gray-700 text-base mb-2'>{event.description}</p>
-                            <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
+                            <span className='block bg gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
                               {event.location.name}
                             </span>
                             <div className='flex items-center justify-between'>
@@ -139,16 +138,21 @@ const Index = () => {
                                 color='success'
                               />
                               <div className='flex flex-row'>
-                                <span>Participants:</span>
-                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
+                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
+                                  Participants:
+                                </span>
+                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
                                   {event.userIDs.length}
                                 </span>
-                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
+                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
                                   Spots Left:
                                 </span>
-                                <span>{event.maxUsers - event.userIDs.length}</span>
+                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
+                                  {event.maxUsers - event.userIDs.length}
+                                </span>
                               </div>
                             </div>
+                            <p className='text-gray-700 text-base mb-2'>{event.description}</p>
                           </div>
                         </div>
                       )
