@@ -111,7 +111,7 @@ const Index = () => {
               {Object.keys(data?.hostingEvents).map((eventDate) => {
                 return (
                   <div key={eventDate} className='mb-16'>
-                    <h2 className='text-xl md:text-xl font-medium pb-3 border-b-2 border-gray5 capitalize'>
+                    <h2 className='text-xl md:text-xl font-bold pb-3 border-b-2 border-gray5 capitalize'>
                       {getDateTitle(eventDate)}
                     </h2>
                     {data?.hostingEvents[eventDate].map((event) => {
@@ -139,16 +139,10 @@ const Index = () => {
                               />
                               <div className='flex flex-row'>
                                 <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  Participants:
+                                  {event.userIDs.length} attendees
                                 </span>
                                 <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  {event.userIDs.length}
-                                </span>
-                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  Spots Left:
-                                </span>
-                                <span className='bg-gray-200 px-3 py-2 rounded text-sm font-bold tracking-wide'>
-                                  {event.maxUsers - event.userIDs.length}
+                                  {event.maxUsers - event.userIDs.length} spots left
                                 </span>
                               </div>
                             </div>
