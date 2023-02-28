@@ -9,6 +9,7 @@ import { getNextEventsByHostId, getNextEventsByUserId } from '~/services/events.
 import { getSession } from '~/services/session.server'
 import { authenticator } from '~/services/auth.server'
 import type { Hobby, User, Event } from '@prisma/client'
+import { getDateTitle } from '~/utils/time'
 
 type EventWithHobbiesAndUsers = Event & {
   hobby: Hobby
@@ -111,7 +112,7 @@ const Index = () => {
                 return (
                   <div key={eventDate} className='mb-16'>
                     <h2 className='text-xl md:text-xl font-medium pb-3 border-b-2 border-gray5 capitalize'>
-                      {eventDate}
+                      {getDateTitle(eventDate)}
                     </h2>
                     {data?.hostingEvents[eventDate].map((event) => {
                       return (
@@ -127,10 +128,10 @@ const Index = () => {
                               </span>
                             </header>
                             <p className='text-gray-700 text-base mb-2'>{event.description}</p>
+                            <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
+                              {event.location.name}
+                            </span>
                             <div className='flex items-center justify-between'>
-                              <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
-                                {event.location.name}
-                              </span>
                               <Chip
                                 style={{ marginRight: '16px', marginBottom: '16px' }}
                                 variant='filled'
@@ -139,10 +140,10 @@ const Index = () => {
                               />
                               <div className='flex flex-row'>
                                 <span>Participants:</span>
-                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
+                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
                                   {event.userIDs.length}
                                 </span>
-                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide uppercase'>
+                                <span className='block bg gray 200 px 3 py 2 rounded text sm font bold tracking wide'>
                                   Spots Left:
                                 </span>
                                 <span>{event.maxUsers - event.userIDs.length}</span>

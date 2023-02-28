@@ -13,11 +13,14 @@ export interface FormValues {
   email?: FormDataEntryValue | null
   password?: FormDataEntryValue | null
 }
+export const CoercedDate = z.coerce.date()
+
+export type ZodCoercedDate = z.infer<typeof CoercedDate>
 
 export const HobbySchema: z.ZodType<Hobby> = z.object({
   id: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: CoercedDate,
+  updatedAt: CoercedDate,
   name: z.string(),
   userIDs: z.array(z.string())
 })
@@ -32,8 +35,8 @@ export const UserSchema = z.object({
   id: z.string(),
   bio: z.string().nullable(),
   birth_date: z.date().nullable(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
+  createdAt: CoercedDate,
+  updatedAt: CoercedDate,
   email: z.string(),
   hobbies: z.array(HobbySchema).optional(),
   hobbyIDs: z.array(z.string()),
