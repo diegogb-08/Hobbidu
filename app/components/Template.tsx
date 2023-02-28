@@ -11,7 +11,7 @@ export const Template = memo(({ event }: Props) => {
   return (
     <div
       key={event.id}
-      className='p-0 bg-clip-padding bg-cover bg-transparent relative flex bg-white z-0 break-words transition-shadow duration-300 w-full flex-row justify-start py-4 border-t border-gray3 md:pt-4 md:pb-5'
+      className='p-0 bg-clip-padding bg-cover bg-transparent relative flex z-0 break-words transition-shadow duration-300 w-full flex-row justify-start py-4 border-t border-gray md:pt-4 md:pb-5'
     >
       <div className='px-6 py-4 w-full'>
         <header className='flex flex-row justify-between'>
