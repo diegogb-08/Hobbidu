@@ -1,4 +1,6 @@
 import type { Hobby, User, Event } from '@prisma/client'
+import type { ZodEventWithHobbyAndUsers } from '~/types/types'
+import { EventWithHobbyAndUsers } from '~/types/types'
 import { getDate } from './time'
 
 type EventWithHobbiesAndUsers = Event & {
@@ -6,16 +8,17 @@ type EventWithHobbiesAndUsers = Event & {
   users: User[]
 }
 
-type EventRecord = Record<string, EventWithHobbiesAndUsers[]>
+type EventRecord = Record<string, ZodEventWithHobbyAndUsers[]>
 export const groupByDateTime = (event: EventWithHobbiesAndUsers[]) => {
   const eventRecord: EventRecord = {}
   event.reduce((_, currentEvent) => {
+    const event = EventWithHobbyAndUsers.parse(currentEvent)
     const existingKeys = Object.keys(eventRecord)
-    const eventDate = getDate(currentEvent.event_date)
+    const eventDate = getDate(new Date(event.event_date))
     if (existingKeys.includes(eventDate)) {
-      eventRecord[eventDate].push(currentEvent)
+      eventRecord[eventDate].push(event)
     } else {
-      eventRecord[eventDate] = [currentEvent]
+      eventRecord[eventDate] = [event]
     }
     return eventRecord
   }, {})

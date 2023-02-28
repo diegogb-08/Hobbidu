@@ -18,6 +18,6 @@ export const getDateTitle = (date: string) => {
   }
 }
 
-export const getDateAndTime = (date: string) => {
+export const getDateAndTime = (date: Date) => {
   return new Intl.DateTimeFormat('en', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(date))
 }
