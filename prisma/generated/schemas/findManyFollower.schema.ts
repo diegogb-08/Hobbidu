@@ -1,10 +1,12 @@
 import { z } from 'zod'
+import { FollowerSelectObjectSchema } from './objects/FollowerSelect.schema'
 import { FollowerOrderByWithRelationInputObjectSchema } from './objects/FollowerOrderByWithRelationInput.schema'
 import { FollowerWhereInputObjectSchema } from './objects/FollowerWhereInput.schema'
 import { FollowerWhereUniqueInputObjectSchema } from './objects/FollowerWhereUniqueInput.schema'
 import { FollowerScalarFieldEnumSchema } from './enums/FollowerScalarFieldEnum.schema'
 
 export const FollowerFindManySchema = z.object({
+  select: z.lazy(() => FollowerSelectObjectSchema.optional()),
   orderBy: z
     .union([FollowerOrderByWithRelationInputObjectSchema, FollowerOrderByWithRelationInputObjectSchema.array()])
     .optional(),

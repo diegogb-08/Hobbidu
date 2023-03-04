@@ -1,10 +1,14 @@
 import { z } from 'zod'
+import { EventSelectObjectSchema } from './objects/EventSelect.schema'
+import { EventIncludeObjectSchema } from './objects/EventInclude.schema'
 import { EventOrderByWithRelationInputObjectSchema } from './objects/EventOrderByWithRelationInput.schema'
 import { EventWhereInputObjectSchema } from './objects/EventWhereInput.schema'
 import { EventWhereUniqueInputObjectSchema } from './objects/EventWhereUniqueInput.schema'
 import { EventScalarFieldEnumSchema } from './enums/EventScalarFieldEnum.schema'
 
 export const EventFindFirstSchema = z.object({
+  select: EventSelectObjectSchema.optional(),
+  include: EventIncludeObjectSchema.optional(),
   orderBy: z
     .union([EventOrderByWithRelationInputObjectSchema, EventOrderByWithRelationInputObjectSchema.array()])
     .optional(),

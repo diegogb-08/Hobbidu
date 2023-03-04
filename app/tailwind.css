@@ -707,10 +707,6 @@ video {
   border-width: 0.5px;
 }
 
-.border-b-2 {
-  border-bottom-width: 2px;
-}
-
 .border-b-\[0\.5px\] {
   border-bottom-width: 0.5px;
 }
