@@ -9,7 +9,8 @@ import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, CALLBACK_URL } from './constant
 import invariant from 'tiny-invariant'
 import { login } from './user.server'
 import type { UserAuth } from '~/types/types'
-import { AuthStrategy } from '~/types/types'
+import { UserWithHobbiesSchema, AuthStrategy } from '~/types/types'
+import { UserCreateOneSchema } from 'prisma/generated/schemas'
 
 export const authenticator = new Authenticator<UserAuth>(sessionStorage, {
   sessionErrorKey: 'sessionErrorKey',
@@ -45,20 +46,44 @@ authenticator
             hobbies: true
           }
         })
-        if (user) {
-          return { user, token: accessToken }
+        const loginResponse = UserWithHobbiesSchema.safeParse(user)
+        if (loginResponse.success) {
+          return { user: loginResponse.data, token: accessToken }
         } else {
-          const { givenName, middleName, familyName } = profile.name
-          const newUser = await db.user.create({
+          const { givenName, familyName } = profile.name
+
+          const registerResponse = UserCreateOneSchema.safeParse({
             data: {
-              name: `${givenName} ${middleName} ${familyName}`,
+              name: `${givenName} ${familyName}`,
               user_name: profile.displayName,
               email: profile.emails[0].value,
               password: accessToken,
-              profile_img: profile.photos[0].value
+              profile_img: profile.photos[0].value,
+              role: 'Standard',
+              hobbyIDs: []
+            },
+            include: {
+              hobbies: true
             }
           })
-          return { user: newUser, token: accessToken }
+
+          if (registerResponse.success) {
+            try {
+              const newUser = await db.user.create(registerResponse.data)
+              const response = UserWithHobbiesSchema.safeParse(newUser)
+              if (response.success) {
+                return { user: response.data, token: accessToken }
+              } else {
+                console.error('Error parsing zod schema User', { registerResponse, response })
+                return new Error('User was not created, there was a server error')
+              }
+            } catch (error) {
+              console.error('Error creating User', { error, registerResponse })
+            }
+          } else {
+            console.error('Error parsing zod schema User', { registerResponse })
+            return new Error('User was not created, there was a server error')
+          }
         }
       }
     ),

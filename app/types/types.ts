@@ -1,5 +1,5 @@
-import type { Hobby, Location } from '@prisma/client'
-import { LocationTypeSchema } from 'prisma/generated/schemas'
+import type { Hobby, Location, User } from '@prisma/client'
+import { LocationTypeSchema, RoleSchema } from 'prisma/generated/schemas'
 import { z } from 'zod'
 
 export enum AuthStrategy {
@@ -13,7 +13,8 @@ export interface FormValues {
   email?: FormDataEntryValue | null
   password?: FormDataEntryValue | null
 }
-export const CoercedDate = z.coerce.string()
+export const CoercedDate = z.coerce.date()
+export const CoercedString = z.coerce.string()
 
 export type ZodCoercedDate = z.infer<typeof CoercedDate>
 
@@ -33,14 +34,18 @@ export const LocationSchema: z.ZodType<Location> = z.object({
   type: LocationTypeSchema
 })
 
-export const UserSchema = z.object({
+export const UserWithHobbiesSchema: z.ZodType<
+  User & {
+    hobbies: Hobby[]
+  }
+> = z.object({
   id: z.string(),
   bio: z.string().nullable(),
   birth_date: CoercedDate.nullable(),
   createdAt: CoercedDate,
   updatedAt: CoercedDate,
   email: z.string(),
-  hobbies: z.array(HobbySchema).optional(),
+  hobbies: z.array(HobbySchema),
   hobbyIDs: z.array(z.string()),
   eventIDs: z.array(z.string()),
   location: LocationSchema.nullable(),
@@ -48,18 +53,19 @@ export const UserSchema = z.object({
   password: z.string(),
   phone_number: z.string().nullable(),
   profile_img: z.string().nullable(),
-  user_name: z.string()
+  user_name: z.string(),
+  role: RoleSchema
 })
 
 export const UserAuthSchema = z
   .object({
-    user: UserSchema,
+    user: UserWithHobbiesSchema,
     token: z.string()
   })
   .nullable()
 
+export type c = z.infer<typeof UserWithHobbiesSchema>
 export type UserAuth = z.infer<typeof UserAuthSchema>
-export type ZodUser = z.infer<typeof UserSchema>
 
 export type HobbiesRecord = Record<string, Hobby>
 
@@ -73,7 +79,7 @@ export const EventWithHobbyAndUsers = z.object({
   hobby: HobbySchema,
   hostID: z.string(),
   userIDs: z.array(z.string()),
-  users: z.array(UserSchema),
+  users: z.array(UserWithHobbiesSchema),
   location: LocationSchema,
   maxUsers: z.number(),
   title: z.string()

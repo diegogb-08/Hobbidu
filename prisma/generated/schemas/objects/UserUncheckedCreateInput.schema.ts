@@ -5,6 +5,7 @@ import { EventUncheckedCreateNestedManyWithoutUsersInputObjectSchema } from './E
 import { UserCreateeventIDsInputObjectSchema } from './UserCreateeventIDsInput.schema'
 import { LocationNullableCreateEnvelopeInputObjectSchema } from './LocationNullableCreateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
+import { RoleSchema } from '../enums/Role.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -30,8 +31,9 @@ const Schema: z.ZodType<Prisma.UserUncheckedCreateInput> = z
     name: z.string().optional().nullable(),
     password: z.string(),
     phone_number: z.string().optional().nullable(),
-    profileImage: z.string().optional().nullable(),
-    user_name: z.string()
+    profile_img: z.string().optional().nullable(),
+    user_name: z.string(),
+    role: z.lazy(() => RoleSchema).optional()
   })
   .strict()
 

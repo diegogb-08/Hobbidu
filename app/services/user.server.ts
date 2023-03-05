@@ -6,7 +6,7 @@ import { getParams } from 'remix-params-helper'
 import { z } from 'zod'
 import invariant from 'tiny-invariant'
 import type { NewUser } from '~/routes/account/register'
-import { UserSchema } from '~/types/types'
+import { UserWithHobbiesSchema } from '~/types/types'
 
 export enum SessionErrorKey {
   WrongFieldType = 'wrong_field_type',
@@ -66,8 +66,13 @@ export const login = async (formData: FormData) => {
     const token = jwt.sign(payload, SECRET, {
       expiresIn: '1w'
     })
-    const parsedUser = UserSchema.parse(user)
-    return { user: parsedUser, token }
+    const response = UserWithHobbiesSchema.safeParse(user)
+    if (response.success) {
+      return { user: response.data, token }
+    } else {
+      console.error(response.error)
+      throw new Response('Error when parsing User at UserSchema', { status: 404 })
+    }
   }
   throw new Error('User not found')
 }

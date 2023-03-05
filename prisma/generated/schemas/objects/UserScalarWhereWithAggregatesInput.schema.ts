@@ -4,6 +4,8 @@ import { StringNullableWithAggregatesFilterObjectSchema } from './StringNullable
 import { DateTimeNullableWithAggregatesFilterObjectSchema } from './DateTimeNullableWithAggregatesFilter.schema'
 import { DateTimeWithAggregatesFilterObjectSchema } from './DateTimeWithAggregatesFilter.schema'
 import { StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema'
+import { EnumRoleWithAggregatesFilterObjectSchema } from './EnumRoleWithAggregatesFilter.schema'
+import { RoleSchema } from '../enums/Role.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -48,11 +50,12 @@ const Schema: z.ZodType<Prisma.UserScalarWhereWithAggregatesInput> = z
       .union([z.lazy(() => StringNullableWithAggregatesFilterObjectSchema), z.string()])
       .optional()
       .nullable(),
-    profileImage: z
+    profile_img: z
       .union([z.lazy(() => StringNullableWithAggregatesFilterObjectSchema), z.string()])
       .optional()
       .nullable(),
-    user_name: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional()
+    user_name: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
+    role: z.union([z.lazy(() => EnumRoleWithAggregatesFilterObjectSchema), z.lazy(() => RoleSchema)]).optional()
   })
   .strict()
 

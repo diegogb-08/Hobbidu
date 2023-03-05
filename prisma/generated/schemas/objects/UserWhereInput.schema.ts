@@ -8,6 +8,8 @@ import { StringNullableListFilterObjectSchema } from './StringNullableListFilter
 import { EventListRelationFilterObjectSchema } from './EventListRelationFilter.schema'
 import { LocationNullableCompositeFilterObjectSchema } from './LocationNullableCompositeFilter.schema'
 import { LocationObjectEqualityInputObjectSchema } from './LocationObjectEqualityInput.schema'
+import { EnumRoleFilterObjectSchema } from './EnumRoleFilter.schema'
+import { RoleSchema } from '../enums/Role.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -55,11 +57,12 @@ const Schema: z.ZodType<Prisma.UserWhereInput> = z
       .union([z.lazy(() => StringNullableFilterObjectSchema), z.string()])
       .optional()
       .nullable(),
-    profileImage: z
+    profile_img: z
       .union([z.lazy(() => StringNullableFilterObjectSchema), z.string()])
       .optional()
       .nullable(),
-    user_name: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional()
+    user_name: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
+    role: z.union([z.lazy(() => EnumRoleFilterObjectSchema), z.lazy(() => RoleSchema)]).optional()
   })
   .strict()
 

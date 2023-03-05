@@ -7,6 +7,8 @@ import { UserUpdatehobbyIDsInputObjectSchema } from './UserUpdatehobbyIDsInput.s
 import { UserUpdateeventIDsInputObjectSchema } from './UserUpdateeventIDsInput.schema'
 import { LocationNullableUpdateEnvelopeInputObjectSchema } from './LocationNullableUpdateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
+import { RoleSchema } from '../enums/Role.schema'
+import { EnumRoleFieldUpdateOperationsInputObjectSchema } from './EnumRoleFieldUpdateOperationsInput.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -41,11 +43,12 @@ const Schema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutUsersInput> = z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),
-    profileImage: z
+    profile_img: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),
-    user_name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional()
+    user_name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
+    role: z.union([z.lazy(() => RoleSchema), z.lazy(() => EnumRoleFieldUpdateOperationsInputObjectSchema)]).optional()
   })
   .strict()
 

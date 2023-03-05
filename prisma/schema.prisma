@@ -23,6 +23,11 @@ type Location {
   type        LocationType
 }
 
+enum Role {
+  Standard
+  Admin
+}
+
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   content   String
@@ -96,8 +101,9 @@ model User {
   name         String?
   password     String
   phone_number String?
-  profileImage String?
+  profile_img String?
   user_name    String    @unique()
+  role         Role      @default(Standard)
 
   @@index([location], map: "location_2dsphere")
 }
