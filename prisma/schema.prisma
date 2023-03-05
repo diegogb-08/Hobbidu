@@ -3,9 +3,9 @@ generator client {
 }
 
 generator zod {
-  provider = "prisma-zod-generator"
-  isGenerateSelect  = true
-  isGenerateInclude = true
+  provider          = "prisma-zod-generator"
+  isGenerateSelect  = "true"
+  isGenerateInclude = "true"
 }
 
 datasource db {
@@ -96,8 +96,16 @@ model User {
   name         String?
   password     String
   phone_number String?
-  profile_img  String?
+  profileImage String?
   user_name    String    @unique()
 
   @@index([location], map: "location_2dsphere")
+}
+
+model File {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  mimeType String
+  size     Int
+  data     Bytes  @db.BinData
 }

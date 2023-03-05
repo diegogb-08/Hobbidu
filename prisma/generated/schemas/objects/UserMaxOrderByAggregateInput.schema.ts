@@ -14,7 +14,7 @@ const Schema: z.ZodType<Prisma.UserMaxOrderByAggregateInput> = z
     name: z.lazy(() => SortOrderSchema).optional(),
     password: z.lazy(() => SortOrderSchema).optional(),
     phone_number: z.lazy(() => SortOrderSchema).optional(),
-    profile_img: z.lazy(() => SortOrderSchema).optional(),
+    profileImage: z.lazy(() => SortOrderSchema).optional(),
     user_name: z.lazy(() => SortOrderSchema).optional()
   })
   .strict()

@@ -21,7 +21,7 @@ const Schema: z.ZodType<Prisma.UserSelect> = z
     name: z.boolean().optional(),
     password: z.boolean().optional(),
     phone_number: z.boolean().optional(),
-    profile_img: z.boolean().optional(),
+    profileImage: z.boolean().optional(),
     user_name: z.boolean().optional(),
     _count: z.union([z.boolean(), z.lazy(() => UserCountOutputTypeArgsObjectSchema)]).optional()
   })

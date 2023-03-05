@@ -41,7 +41,7 @@ const Schema: z.ZodType<Prisma.UserUncheckedUpdateManyWithoutUserInput> = z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),
-    profile_img: z
+    profileImage: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),

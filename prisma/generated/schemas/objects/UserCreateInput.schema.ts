@@ -30,7 +30,7 @@ const Schema: z.ZodType<Prisma.UserCreateInput> = z
     name: z.string().optional().nullable(),
     password: z.string(),
     phone_number: z.string().optional().nullable(),
-    profile_img: z.string().optional().nullable(),
+    profileImage: z.string().optional().nullable(),
     user_name: z.string()
   })
   .strict()

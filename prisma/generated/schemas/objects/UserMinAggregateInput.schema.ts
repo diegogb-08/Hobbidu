@@ -13,7 +13,7 @@ const Schema: z.ZodType<Prisma.UserMinAggregateInputType> = z
     name: z.literal(true).optional(),
     password: z.literal(true).optional(),
     phone_number: z.literal(true).optional(),
-    profile_img: z.literal(true).optional(),
+    profileImage: z.literal(true).optional(),
     user_name: z.literal(true).optional()
   })
   .strict()

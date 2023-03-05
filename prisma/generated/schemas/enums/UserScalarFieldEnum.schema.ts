@@ -12,6 +12,6 @@ export const UserScalarFieldEnumSchema = z.enum([
   'name',
   'password',
   'phone_number',
-  'profile_img',
+  'profileImage',
   'user_name'
 ])

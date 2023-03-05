@@ -43,7 +43,7 @@ const Schema: z.ZodType<Prisma.UserUpdateWithoutEventsInput> = z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),
-    profile_img: z
+    profileImage: z
       .union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)])
       .optional()
       .nullable(),
