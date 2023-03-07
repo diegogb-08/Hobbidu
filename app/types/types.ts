@@ -13,8 +13,11 @@ export interface FormValues {
   email?: FormDataEntryValue | null
   password?: FormDataEntryValue | null
 }
-export const CoercedDate = z.coerce.date()
-export const CoercedString = z.coerce.string()
+export const CoercedDate = z.coerce.date().transform((value) => new Date(value))
+export const CoercedStringDate = z.coerce
+  .string()
+  .datetime()
+  .transform((value) => new Date(value))
 
 export type ZodCoercedDate = z.infer<typeof CoercedDate>
 
