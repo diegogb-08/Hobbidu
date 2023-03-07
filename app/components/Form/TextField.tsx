@@ -1,19 +1,16 @@
-import type { ForwardedRef, HTMLInputTypeAttribute } from 'react'
+import type { ForwardedRef, HTMLInputTypeAttribute, InputHTMLAttributes } from 'react'
 import { forwardRef } from 'react'
 import { useField } from 'remix-validated-form'
 
-interface Props {
+interface Props extends InputHTMLAttributes<HTMLInputElement> {
   name: string
   className?: string
   text?: string
-  placeholder?: string
   type?: HTMLInputTypeAttribute
-  value?: string | number | readonly string[] | undefined
-  defaultValue?: string | number | readonly string[] | undefined
 }
 
 const TextField = forwardRef(
-  ({ name, text, className, placeholder, type, value, defaultValue }: Props, ref: ForwardedRef<HTMLInputElement>) => {
+  ({ name, text, className, type, onChange, ...restOfProps }: Props, ref: ForwardedRef<HTMLInputElement>) => {
     const { getInputProps, error } = useField(name, {
       validationBehavior: {
         initial: 'onSubmit',
@@ -28,8 +25,6 @@ const TextField = forwardRef(
         </label>
         <input
           ref={ref}
-          value={value}
-          defaultValue={defaultValue}
           name={name}
           type={type}
           className={`
@@ -46,8 +41,10 @@ const TextField = forwardRef(
         transition
         ease-in-out
         m-0 focus:bg-white focus:border-blue focus:outline-non ${className}`}
-          placeholder={placeholder}
-          {...getInputProps()}
+          {...restOfProps}
+          {...getInputProps({
+            onChange
+          })}
         />
         <div className='h-4 w-full flex items-start pl-2'>
           {!!error && <span className='text-xs text-red'>{error}</span>}

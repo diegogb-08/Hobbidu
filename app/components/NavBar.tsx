@@ -4,12 +4,13 @@ import AvatarIcon from '~/icons/AvatarIcon'
 import CalendarPlusIcon from '~/icons/CalendarPlusIcon'
 import HomeIcon from '~/icons/HomeIcon'
 import { Routes } from '~/routes/routes'
+import type { ZodUserWithHobbies } from '~/types/types'
 
 interface Props {
-  userId: string
+  user?: ZodUserWithHobbies
 }
 
-const NavBar = ({ userId }: Props) => {
+const NavBar = ({ user }: Props) => {
   const match = useMatches()
   return (
     <nav className='flex w-80 justify-between'>
@@ -18,12 +19,12 @@ const NavBar = ({ userId }: Props) => {
           <HomeIcon color={match[1].id.includes('index') ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
-      <Link to={`${Routes.EVENTS}/${userId}`} prefetch='intent'>
+      <Link to={`${Routes.EVENTS}/${user?.id}`} prefetch='intent'>
         <IconButton>
           <CalendarPlusIcon color={match[1].id.includes(Routes.EVENTS) ? '#f05356' : '#acacacc4'} />
         </IconButton>
       </Link>
-      <Link to={Routes.PROFILE}>
+      <Link to={`${Routes.PROFILE}/${user?.user_name}`}>
         <IconButton>
           <AvatarIcon color={match[1].id.includes(Routes.PROFILE) ? '#f05356' : '#acacacc4'} />
         </IconButton>

@@ -64,7 +64,7 @@ export const UserAuthSchema = z
   })
   .nullable()
 
-export type c = z.infer<typeof UserWithHobbiesSchema>
+export type ZodUserWithHobbies = z.infer<typeof UserWithHobbiesSchema>
 export type UserAuth = z.infer<typeof UserAuthSchema>
 
 export type HobbiesRecord = Record<string, Hobby>
