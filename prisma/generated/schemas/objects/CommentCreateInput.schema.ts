@@ -5,7 +5,7 @@ import type { Prisma } from '@prisma/client'
 const Schema: z.ZodType<Prisma.CommentCreateInput> = z
   .object({
     id: z.string().optional(),
-    content: z.string(),
+    content: z.string().optional().nullable(),
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
     event_id: z.string().optional().nullable(),

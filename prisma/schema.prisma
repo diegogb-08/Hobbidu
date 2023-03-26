@@ -30,7 +30,7 @@ enum Role {
 
 model Comment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  content   String
+  content   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   event_id  String?  @db.ObjectId
