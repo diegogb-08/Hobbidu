@@ -4,12 +4,12 @@ import { NullableDateTimeFieldUpdateOperationsInputObjectSchema } from './Nullab
 import { DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema'
 import { StringFieldUpdateOperationsInputObjectSchema } from './StringFieldUpdateOperationsInput.schema'
 import { UserUpdatehobbyIDsInputObjectSchema } from './UserUpdatehobbyIDsInput.schema'
-import { EventUncheckedUpdateManyWithoutUsersNestedInputObjectSchema } from './EventUncheckedUpdateManyWithoutUsersNestedInput.schema'
 import { UserUpdateeventIDsInputObjectSchema } from './UserUpdateeventIDsInput.schema'
 import { LocationNullableUpdateEnvelopeInputObjectSchema } from './LocationNullableUpdateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 import { RoleSchema } from '../enums/Role.schema'
 import { EnumRoleFieldUpdateOperationsInputObjectSchema } from './EnumRoleFieldUpdateOperationsInput.schema'
+import { EventUncheckedUpdateManyWithoutUsersNestedInputObjectSchema } from './EventUncheckedUpdateManyWithoutUsersNestedInput.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -27,7 +27,6 @@ const Schema: z.ZodType<Prisma.UserUncheckedUpdateWithoutHobbiesInput> = z
     updatedAt: z.union([z.date(), z.lazy(() => DateTimeFieldUpdateOperationsInputObjectSchema)]).optional(),
     email: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
     hobbyIDs: z.union([z.lazy(() => UserUpdatehobbyIDsInputObjectSchema), z.string().array()]).optional(),
-    events: z.lazy(() => EventUncheckedUpdateManyWithoutUsersNestedInputObjectSchema).optional(),
     eventIDs: z.union([z.lazy(() => UserUpdateeventIDsInputObjectSchema), z.string().array()]).optional(),
     location: z
       .union([
@@ -50,7 +49,8 @@ const Schema: z.ZodType<Prisma.UserUncheckedUpdateWithoutHobbiesInput> = z
       .optional()
       .nullable(),
     user_name: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
-    role: z.union([z.lazy(() => RoleSchema), z.lazy(() => EnumRoleFieldUpdateOperationsInputObjectSchema)]).optional()
+    role: z.union([z.lazy(() => RoleSchema), z.lazy(() => EnumRoleFieldUpdateOperationsInputObjectSchema)]).optional(),
+    events: z.lazy(() => EventUncheckedUpdateManyWithoutUsersNestedInputObjectSchema).optional()
   })
   .strict()
 

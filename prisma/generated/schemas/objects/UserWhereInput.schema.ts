@@ -3,13 +3,13 @@ import { StringFilterObjectSchema } from './StringFilter.schema'
 import { StringNullableFilterObjectSchema } from './StringNullableFilter.schema'
 import { DateTimeNullableFilterObjectSchema } from './DateTimeNullableFilter.schema'
 import { DateTimeFilterObjectSchema } from './DateTimeFilter.schema'
-import { HobbyListRelationFilterObjectSchema } from './HobbyListRelationFilter.schema'
 import { StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema'
-import { EventListRelationFilterObjectSchema } from './EventListRelationFilter.schema'
 import { LocationNullableCompositeFilterObjectSchema } from './LocationNullableCompositeFilter.schema'
 import { LocationObjectEqualityInputObjectSchema } from './LocationObjectEqualityInput.schema'
 import { EnumRoleFilterObjectSchema } from './EnumRoleFilter.schema'
 import { RoleSchema } from '../enums/Role.schema'
+import { HobbyListRelationFilterObjectSchema } from './HobbyListRelationFilter.schema'
+import { EventListRelationFilterObjectSchema } from './EventListRelationFilter.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -37,9 +37,7 @@ const Schema: z.ZodType<Prisma.UserWhereInput> = z
     createdAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.date()]).optional(),
     updatedAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.date()]).optional(),
     email: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
-    hobbies: z.lazy(() => HobbyListRelationFilterObjectSchema).optional(),
     hobbyIDs: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
-    events: z.lazy(() => EventListRelationFilterObjectSchema).optional(),
     eventIDs: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
     location: z
       .union([
@@ -62,7 +60,9 @@ const Schema: z.ZodType<Prisma.UserWhereInput> = z
       .optional()
       .nullable(),
     user_name: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
-    role: z.union([z.lazy(() => EnumRoleFilterObjectSchema), z.lazy(() => RoleSchema)]).optional()
+    role: z.union([z.lazy(() => EnumRoleFilterObjectSchema), z.lazy(() => RoleSchema)]).optional(),
+    hobbies: z.lazy(() => HobbyListRelationFilterObjectSchema).optional(),
+    events: z.lazy(() => EventListRelationFilterObjectSchema).optional()
   })
   .strict()
 

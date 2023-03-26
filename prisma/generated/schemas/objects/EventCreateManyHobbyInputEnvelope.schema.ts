@@ -5,7 +5,10 @@ import type { Prisma } from '@prisma/client'
 
 const Schema: z.ZodType<Prisma.EventCreateManyHobbyInputEnvelope> = z
   .object({
-    data: z.lazy(() => EventCreateManyHobbyInputObjectSchema).array()
+    data: z.union([
+      z.lazy(() => EventCreateManyHobbyInputObjectSchema),
+      z.lazy(() => EventCreateManyHobbyInputObjectSchema).array()
+    ])
   })
   .strict()
 

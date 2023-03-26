@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { UserCreateNestedManyWithoutHobbiesInputObjectSchema } from './UserCreateNestedManyWithoutHobbiesInput.schema'
-import { HobbyCreateuserIDsInputObjectSchema } from './HobbyCreateuserIDsInput.schema'
 import { EventCreateNestedManyWithoutHobbyInputObjectSchema } from './EventCreateNestedManyWithoutHobbyInput.schema'
 
 import type { Prisma } from '@prisma/client'
@@ -12,7 +11,6 @@ const Schema: z.ZodType<Prisma.HobbyCreateInput> = z
     updatedAt: z.date().optional(),
     name: z.string(),
     user: z.lazy(() => UserCreateNestedManyWithoutHobbiesInputObjectSchema).optional(),
-    userIDs: z.union([z.lazy(() => HobbyCreateuserIDsInputObjectSchema), z.string().array()]).optional(),
     events: z.lazy(() => EventCreateNestedManyWithoutHobbyInputObjectSchema).optional()
   })
   .strict()

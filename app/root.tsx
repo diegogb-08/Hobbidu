@@ -2,11 +2,15 @@ import type { DataFunctionArgs, LinksFunction, MetaFunction } from '@remix-run/n
 import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from '@remix-run/react'
 import Header from './components/Header'
 import { authenticator } from './services/auth.server'
-import styles from './tailwind.css'
+import stylesheet from './styles/tailwind.css'
+import main from './styles/main.css'
 import { UserAuthSchema } from './types/types'
 import '@total-typescript/ts-reset'
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles, as: 'style' }]
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: stylesheet, as: 'style' },
+  { rel: 'stylesheet', href: main, as: 'style' }
+]
 
 export const meta: MetaFunction = () => ({
   // eslint-disable-next-line unicorn/text-encoding-identifier-case

@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { HobbyUncheckedCreateNestedManyWithoutUserInputObjectSchema } from './HobbyUncheckedCreateNestedManyWithoutUserInput.schema'
 import { UserCreatehobbyIDsInputObjectSchema } from './UserCreatehobbyIDsInput.schema'
 import { UserCreateeventIDsInputObjectSchema } from './UserCreateeventIDsInput.schema'
 import { LocationNullableCreateEnvelopeInputObjectSchema } from './LocationNullableCreateEnvelopeInput.schema'
 import { LocationCreateInputObjectSchema } from './LocationCreateInput.schema'
 import { RoleSchema } from '../enums/Role.schema'
+import { HobbyUncheckedCreateNestedManyWithoutUserInputObjectSchema } from './HobbyUncheckedCreateNestedManyWithoutUserInput.schema'
 
 import type { Prisma } from '@prisma/client'
 
@@ -16,7 +16,6 @@ const Schema: z.ZodType<Prisma.UserUncheckedCreateWithoutEventsInput> = z
     createdAt: z.date().optional(),
     updatedAt: z.date().optional(),
     email: z.string(),
-    hobbies: z.lazy(() => HobbyUncheckedCreateNestedManyWithoutUserInputObjectSchema).optional(),
     hobbyIDs: z.union([z.lazy(() => UserCreatehobbyIDsInputObjectSchema), z.string().array()]).optional(),
     eventIDs: z.union([z.lazy(() => UserCreateeventIDsInputObjectSchema), z.string().array()]).optional(),
     location: z
@@ -31,7 +30,8 @@ const Schema: z.ZodType<Prisma.UserUncheckedCreateWithoutEventsInput> = z
     phone_number: z.string().optional().nullable(),
     profile_img: z.string().optional().nullable(),
     user_name: z.string(),
-    role: z.lazy(() => RoleSchema).optional()
+    role: z.lazy(() => RoleSchema).optional(),
+    hobbies: z.lazy(() => HobbyUncheckedCreateNestedManyWithoutUserInputObjectSchema).optional()
   })
   .strict()
 
